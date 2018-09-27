@@ -24,7 +24,12 @@ namespace Models
 
         public bool needsUpdate = true;
 
-
+        protected double target_x = 0;
+        protected double target_y = 0;
+        protected double target_z = 0;
+        bool destinationreached = true;
+        bool isMoving = false;
+        protected double speed = 0.1;
 
         public virtual void Move(double x, double y, double z) {
             this._x = x;
@@ -33,53 +38,63 @@ namespace Models
 
             needsUpdate = true;
         }
-        public virtual void MoveTo(double xd,double yd, double zd)
+        public virtual void SetDestination(double x,double y ,double z)
         {
+            target_x = x;
+            target_y = y;
+            target_z =  z;
+            destinationreached = false;
+        }
+        public virtual void MoveTo(double xd, double yd, double zd)
+        {
+         if (!isMoving)
+            {
+                // If  this is the first time moving, set the target
+                target_x = xd;
+                target_y = yd;
+                target_z = zd;
+                isMoving = true;
+                needsUpdate = true;
+            }
+            if (isMoving)
+            {
+                if (x != target_x )
+                {
+                    if (target_x >x)
+                    {
+                        _x = x + speed;
+                    }
+                    else
+                    {
+                        _x = x - speed;
+                    }
+                    _x = x +speed;
+                    needsUpdate = true;
+                    return;
+                }
+               
+            }
+            double x_dif = xd - x;
+            double y_dif = yd - y;
+            double z_dif = zd - z;
+
+            // Move one step, check if i need to move again
+
             //Check if you need to move on an axis
             // Check if you need to move less than a 'tick'
             // if true, move the  last remaining bit
             // if false, move the tick valye
             // Repeat until the move is done
-        
-            double xdif = xd - x;
-            double ydif = yd - y;
-            double zdif = zd - z;
-            bool destinationreached = false;
-            // 3 times, for each axis
-            while (!destinationreached)
+
+            if (destinationreached)
             {
-
-            
-                if (!needsUpdate)
-                {
-
-
-
-                    // If not 0, i need to move on the X axis
-                    if (xdif != 0)
-                    {
-                        // If less than 5 , 
-                        if (xdif < 5)
-                        {
-                            this.Move(xdif, 0, 0);
-                            destinationreached = true;
-
-                        }
-                        else
-                        {
-                            this.Move(5, 0, 0);
-                            xdif = xdif - 5;
-                        }
-                    }
-
-                    if (xdif == 0)
-                    {
-                        destinationreached = true;
-                    }
-
-
-                }
+                // No need to move this update
+                return;
             }
+
+
+            // 3 times, for each axis
+
         }
 
         public virtual void Rotate(double rotationX, double rotationY, double rotationZ) {

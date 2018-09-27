@@ -76,7 +76,7 @@
                 //scene.add(skybox);
 
                 var sphericalSkyboxGemotery = new THREE.SphereGeometry(500, 32, 32);
-                var sphericalSkyboxMaterial = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("3dmodels/orig_02_-_Defaul1noCulling.JPG"), side: THREE.DoubleSide });
+                var sphericalSkyboxMaterial = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("3dmodels/skybox.JPG"), side: THREE.DoubleSide });
                 var sphericalSkybox = new THREE.Mesh(sphericalSkyboxGemotery, sphericalSkyboxMaterial);
                 scene.add(sphericalSkybox);
             }

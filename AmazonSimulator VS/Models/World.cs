@@ -10,7 +10,7 @@ namespace Models
         private List<Abstract_Model> worldObjects = new List<Abstract_Model>();
         private List<IObserver<Command>> observers = new List<IObserver<Command>>();
 
-       
+        Robot r;
 
         public World()
         {
@@ -18,8 +18,8 @@ namespace Models
             List<char> paths = d.shortest_path('A','F');
             Rek q = CreateRek(0,0,0);
             q.Move(1, 1, 1);
-            Robot r = CreateRobot(0, 0, 0);
-            r.Move(4.6, 0, 13);
+            r = CreateRobot(0, 0, 0);
+ 
            // MoveModel(r, 50, 0, 0);
         }
         private Rek CreateRek(double x, double y, double z)
@@ -125,7 +125,7 @@ namespace Models
                     }
                 }
             }
-
+            r.MoveTo(50,0,0);
             return true;
         }
     }
