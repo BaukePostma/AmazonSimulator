@@ -112,6 +112,7 @@ namespace Models
 
         public bool Update(int tick)
         {
+            r.MoveTo(30, 0, 30);
             for (int i = 0; i < worldObjects.Count; i++)
             {
                 Abstract_Model u = worldObjects[i];
@@ -125,7 +126,6 @@ namespace Models
                     }
                 }
             }
-            r.MoveTo(50,0,50);
             return true;
         }
     }

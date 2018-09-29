@@ -12,7 +12,7 @@ namespace Models
     {
         public Dijkstra()
         {
-     
+     // i.p.v int gebruik maken van een array van ints voor de 3 axis?
             this.add_vertex('A', new Dictionary<char, int>() { { 'B', 7 }, { 'C', 8 } });
             this.add_vertex('B', new Dictionary<char, int>() { { 'A', 7 }, { 'F', 2 } });
             this.add_vertex('C', new Dictionary<char, int>() { { 'A', 8 }, { 'F', 6 }, { 'G', 4 } });
