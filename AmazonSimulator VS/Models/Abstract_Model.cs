@@ -58,6 +58,7 @@ namespace Models
             }
             if (isMoving)
             {
+                // If already moving, move the model on the axis by the value of speed. ALso checks for positve and negative values
                 if (x != target_x )
                 {
                     if (target_x >x)
@@ -69,10 +70,38 @@ namespace Models
                         _x = x - speed;
                     }
                     _x = x +speed;
-                    needsUpdate = true;
-                    return;
+                   // needsUpdate = true;
+                   
                 }
-               
+                if (y != target_y)
+                {
+                    if (target_y > y)
+                    {
+                        _y = y + speed;
+                    }
+                    else
+                    {
+                        _y = y - speed;
+                    }
+                    _y = y + speed;
+                  //  needsUpdate = true;
+                 
+                }
+                if (z != target_z)
+                {
+                    if (target_z > x)
+                    {
+                        _z = z + speed;
+                    }
+                    else
+                    {
+                        _z = z - speed;
+                    }
+                    _z = z + speed;
+                   
+                }
+                needsUpdate = true;
+                return;
             }
             double x_dif = xd - x;
             double y_dif = yd - y;
