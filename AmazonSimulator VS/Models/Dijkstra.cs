@@ -92,7 +92,7 @@ namespace Models
 
                 foreach (var neighbor in vertices[smallest])
                 {
-                    var alt = distances[smallest] + neighbor.Value[1];
+                    var alt = distances[smallest] + (neighbor.Value[0] + neighbor.Value[1] + neighbor.Value[2]) ;
                     if (alt < distances[neighbor.Key])
                     {
                         distances[neighbor.Key] = alt;
