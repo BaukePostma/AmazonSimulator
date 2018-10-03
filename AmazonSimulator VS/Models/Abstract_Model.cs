@@ -64,6 +64,11 @@ namespace Models
             }
             if (isMoving)
             {
+                if (xd == this.x && yd == this.y && zd ==z)
+                {
+                    isMoving = false;
+                    return;
+                }
                 // If already moving, move the model on the axis by the value of speed. ALso checks for positve and negative values
                 if (x != target_x )
                 {

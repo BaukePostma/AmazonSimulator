@@ -7,7 +7,7 @@ namespace Models
 {
     public class World : IObservable<Command>, IUpdatable
     {
-        private List<Abstract_Model> worldObjects = new List<Abstract_Model>();
+        public List<Abstract_Model> worldObjects = new List<Abstract_Model>();
         private List<IObserver<Command>> observers = new List<IObserver<Command>>();
 
         Robot r;
@@ -24,14 +24,14 @@ namespace Models
   
           
 
-            g.shortest_path('A', 'H').ForEach(x => Console.WriteLine(x));
+           // g.shortest_path('A', 'H').ForEach(x => Console.WriteLine(x));
             t = SpawnTruck(-20,0,0);
             d = new Dijkstra();
             List<char> paths = d.shortest_path('A','F');
-            Rek q = CreateRek(0,0,0);
-            q.Move(1, 1, 1);
+            Rek q = CreateRek(-100,0,0);
             r = CreateRobot(0, 0, 0);
-            
+
+            r.PickupRek();
            // MoveModel(r, 50, 0, 0);
         }
 
@@ -49,7 +49,7 @@ namespace Models
         }
         private Robot CreateRobot(double x, double y, double z)
         {
-            Robot constructorrobot = new Robot(x, y, z, 0, 0, 0);
+            Robot constructorrobot = new Robot(x, y, z, 0, 0, 0,this);
             worldObjects.Add(constructorrobot);
             return constructorrobot;
         }

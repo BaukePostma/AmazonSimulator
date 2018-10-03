@@ -6,8 +6,37 @@ using Newtonsoft.Json;
 namespace Models {
     public class Robot : Abstract_Model
     {
-        public Robot(double x, double y, double z, double rotationX, double rotationY, double rotationZ)
+        bool atPickupPoint = true;
+        Rek carriedRek;
+        private World w;
+        
+        public void PickupRek()
         {
+           
+            if (atPickupPoint)
+            {
+                foreach (var item in w.worldObjects)
+                {
+                   
+                    if (item is Rek)
+                    {
+                         Rek q = (Rek)item;
+                        
+                        if (q.readyforpickup == true)
+                        {
+                            carriedRek = q;
+                            carriedRek.Move(this.x,this.y,this.z);
+                        }
+                    }
+                }
+            }
+        }
+
+       
+    
+    public Robot(double x, double y, double z, double rotationX, double rotationY, double rotationZ,World w)
+        {
+            this.w = w;
             this.type = "robot";
             this.guid = Guid.NewGuid();
 
@@ -22,6 +51,10 @@ namespace Models {
         public override bool Update(int tick)
         {
             this.MoveTo(30, 0, 30);
+            if(carriedRek != null)
+            {
+                carriedRek.Move(this.x, this.y, this.z);
+            }
             if (needsUpdate)
             {
                 needsUpdate = false;
