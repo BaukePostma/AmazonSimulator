@@ -13,8 +13,18 @@ namespace Models
         Robot r;
         Truck t;
         Dijkstra d;
+
         public World()
         {
+            Dijkstra g = new Dijkstra();
+            Node testnode = new Node('A',0,0,0);
+            Node endnode = new Node('D',30,0,30);
+           
+            g.addNode(testnode, new Dictionary<char, int>() { { 'B', 7 }, { 'C', 8 } });
+  
+          
+
+            g.shortest_path('A', 'H').ForEach(x => Console.WriteLine(x));
             t = SpawnTruck(-20,0,0);
             d = new Dijkstra();
             List<char> paths = d.shortest_path('A','F');
@@ -24,6 +34,7 @@ namespace Models
             
            // MoveModel(r, 50, 0, 0);
         }
+
         private Truck SpawnTruck(double x, double y, double z)
         {
             Truck t = new Truck(x, y, z, 0, 0, 0);
