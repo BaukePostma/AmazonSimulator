@@ -29,7 +29,7 @@ namespace Models
         protected double target_z = 0;
         bool destinationreached = true;
         bool isMoving = false;
-        protected double speed = 0.1;
+        public double speed = 0.01;
 
         public virtual void Move(double x, double y, double z) {
             this._x = x;
@@ -45,6 +45,12 @@ namespace Models
             target_z =  z;
             destinationreached = false;
         }
+        /// <summary>
+        /// Moves the model to the given coordinates
+        /// </summary>
+        /// <param name="xd"></param>
+        /// <param name="yd"></param>
+        /// <param name="zd"></param>
         public virtual void MoveTo(double xd, double yd, double zd)
         {
          if (!isMoving)

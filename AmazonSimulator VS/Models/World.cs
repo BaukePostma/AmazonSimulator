@@ -11,16 +11,24 @@ namespace Models
         private List<IObserver<Command>> observers = new List<IObserver<Command>>();
 
         Robot r;
-
+        Truck t;
+        Dijkstra d;
         public World()
         {
-            Dijkstra d = new Dijkstra();
+            t = SpawnTruck(-20,0,0);
+            d = new Dijkstra();
             List<char> paths = d.shortest_path('A','F');
             Rek q = CreateRek(0,0,0);
             q.Move(1, 1, 1);
             r = CreateRobot(0, 0, 0);
- 
+            
            // MoveModel(r, 50, 0, 0);
+        }
+        private Truck SpawnTruck(double x, double y, double z)
+        {
+            Truck t = new Truck(x, y, z, 0, 0, 0);
+            worldObjects.Add(t);
+            return t;
         }
         private Rek CreateRek(double x, double y, double z)
         {
@@ -34,54 +42,54 @@ namespace Models
             worldObjects.Add(constructorrobot);
             return constructorrobot;
         }
-        public void MoveModel(Abstract_Model model,double x, double y , double z)
-        {
-            //Check if you need to move on an axis
-            // Check if you need to move less than a 'tick'
-            // if true, move the  last remaining bit
-            // if false, move the tick valye
-            // Repeat until the move is done
+        //public void MoveModel(Abstract_Model model,double x, double y , double z)
+        //{
+        //    //Check if you need to move on an axis
+        //    // Check if you need to move less than a 'tick'
+        //    // if true, move the  last remaining bit
+        //    // if false, move the tick valye
+        //    // Repeat until the move is done
 
-            double xdif = x - model.x;
-            double ydif = y - model.y;
-            double zdif = z - model.z;
-            bool destinationreached = false;
-            // 3 times, for each axis
-            while (!destinationreached)
-            {
-
-
-                if (model.needsUpdate)
-                {
+        //    double xdif = x - model.x;
+        //    double ydif = y - model.y;
+        //    double zdif = z - model.z;
+        //    bool destinationreached = false;
+        //    // 3 times, for each axis
+        //    while (!destinationreached)
+        //    {
 
 
-
-                    // If not 0, i need to move on the X axis
-                    if (xdif != 0)
-                    {
-                        // If less than 5 , 
-                        if (xdif < 5)
-                        {
-                            model.Move(xdif, 0, 0);
-                            destinationreached = true;
-
-                        }
-                        else
-                        {
-                            model.Move(5, 0, 0);
-                            xdif = xdif - 5;
-                        }
-                    }
-
-                    if (xdif == 0)
-                    {
-                        destinationreached = true;
-                    }
+        //        if (model.needsUpdate)
+        //        {
 
 
-                }
-            }
-        }
+
+        //            // If not 0, i need to move on the X axis
+        //            if (xdif != 0)
+        //            {
+        //                // If less than 5 , 
+        //                if (xdif < 5)
+        //                {
+        //                    model.Move(xdif, 0, 0);
+        //                    destinationreached = true;
+
+        //                }
+        //                else
+        //                {
+        //                    model.Move(5, 0, 0);
+        //                    xdif = xdif - 5;
+        //                }
+        //            }
+
+        //            if (xdif == 0)
+        //            {
+        //                destinationreached = true;
+        //            }
+
+
+        //        }
+        //    }
+        //}
 
         public IDisposable Subscribe(IObserver<Command> observer)
         {
@@ -112,7 +120,8 @@ namespace Models
 
         public bool Update(int tick)
         {
-            r.MoveTo(30, 0, 30);
+           // r.MoveTo(30, 0, 30);
+           // t.MoveTo(30, 0, 0);
             for (int i = 0; i < worldObjects.Count; i++)
             {
                 Abstract_Model u = worldObjects[i];

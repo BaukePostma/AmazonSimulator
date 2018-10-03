@@ -18,6 +18,16 @@ namespace Models {
             this._rX = rotationX;
             this._rY = rotationY;
             this._rZ = rotationZ;
-         }
-     }
+        }
+        public override bool Update(int tick)
+        {
+            this.MoveTo(30, 0, 30);
+            if (needsUpdate)
+            {
+                needsUpdate = false;
+                return true;
+            }
+            return false;
+        }
+    }
 }
