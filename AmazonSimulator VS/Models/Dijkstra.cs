@@ -10,22 +10,35 @@ namespace Models
     /// </summary>
     public class Dijkstra
     {
-        List<Node> NodeList = new List<Node>();
-        public void addNode(Node node,Dictionary<char,int> distances)
-        {
+      
 
-        }
         public void ConvertNodesToGraph(List<Node> list)
         {
-            foreach (var node in NodeList)
-            {
+            // Probably not going to finish this function in time, on the backburner
+           // foreach (var node in NodeList)
+         //   {
                 // Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
                 //add_vertex(node.name)
-            }
+         //   }
         }
         Dictionary<char, Dictionary<char, int>> vertices = new Dictionary<char, Dictionary<char, int>>();
 
+        public Dijkstra()
+        {
+         //   this.addNode('A', );
 
+            // Sets the path of the world
+            this.add_vertex('A', new Dictionary<char, int>() { { 'B',  15 }, { 'D', 30 } });
+            this.add_vertex('B', new Dictionary<char, int>() { { 'A', 15 }, { 'C', 15 } });
+            this.add_vertex('C', new Dictionary<char, int>() { { 'B', 15 }, { 'E', 30 } });
+            this.add_vertex('D', new Dictionary<char, int>() { { 'A', 30 }, { 'E', 30 } });
+            this.add_vertex('E', new Dictionary<char, int>() { { 'C', 30 }, { 'D', 30 }, });
+
+            // Sets the 3d-points of the world
+
+    
+           // shortest_path('A', 'E').ForEach(x => Console.WriteLine(x));
+        }
 
 
 

@@ -7,36 +7,18 @@ namespace Models {
     public class Robot : Abstract_Model
     {
         bool atPickupPoint = true;
+        public bool idle {get;set;}
         Rek carriedRek;
         private World w;
-        
-        public void PickupRek()
-        {
-           
-            if (atPickupPoint)
-            {
-                foreach (var item in w.worldObjects)
-                {
-                   
-                    if (item is Rek)
-                    {
-                         Rek q = (Rek)item;
-                        
-                        if (q.readyforpickup == true)
-                        {
-                            carriedRek = q;
-                            carriedRek.Move(this.x,this.y,this.z);
-                        }
-                    }
-                }
-            }
-        }
+        private List<Node> route;
+        private Node TargetNode;
 
-       
-    
+
+
     public Robot(double x, double y, double z, double rotationX, double rotationY, double rotationZ,World w)
         {
             this.w = w;
+            route = new List<Node>();
             this.type = "robot";
             this.guid = Guid.NewGuid();
 
@@ -48,9 +30,96 @@ namespace Models {
             this._rY = rotationY;
             this._rZ = rotationZ;
         }
+        public void Main()
+        {
+            // If idle, dont do anything
+            if (idle)
+            {
+                return;
+            }
+         
+            //Check if the robot is at it's destination
+            if (this.x == TargetNode.x && this.y ==TargetNode.y && this.z == TargetNode.z )
+            {
+                DropOffRek();
+            }
+            else if (this.x == route[0].x && this.y == route[0].y && this.z == route[0].z)
+            {
+                route.RemoveAt(0);
+            }
+            this.MoveTo(route[0]);
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="points">A list of charactrse the robot has to follow</param>
+        /// <param name="target"> The point where the robot has to drop off it's load</param>
+        public void SetRoute(List<char> points,char target)
+        {
+            // Set the route the robot needs to take
+            foreach (char char_point in points)
+            {
+                foreach (Node node_point in w.NodeList)
+                {
+                    if (char_point == node_point.name)
+                    {
+                        route.Add(node_point);
+                    }
+                }
+                if (char_point == target)
+                {
+                    foreach (Node item in w.NodeList)
+                    {
+                        if (item.name == target)
+                        {
+                            TargetNode = item;
+                        }
+                    }
+                    
+                }
+            }
+            // Sets the target the robot has to drop it's load off
+
+            Console.WriteLine();
+        }
+        /// <summary>
+        /// Needs to get called when the robot is at the depot. Checks if there is an available Rek nearby and picks it up
+        /// </summary>
+        public void PickupRek()
+        {
+            // Check if the robot is at the depot
+            if (atPickupPoint)
+            {
+                foreach (var item in w.worldObjects)
+                {
+                    
+                    if (item is Rek)
+                    {
+                        Rek q = (Rek)item;
+
+                        if (q.readyforpickup == true)
+                        {
+                            carriedRek = q;
+                            carriedRek.Move(this.x, this.y, this.z);
+                        }
+                    }
+                }
+            }
+        }
+       /// <summary>
+       /// Gets called when the robot reaches it's destination
+       /// </summary>
+        public void DropOffRek()
+        {
+            if (carriedRek!= null)
+            {
+                // Drop off or something
+            }
+        }
         public override bool Update(int tick)
         {
-            this.MoveTo(30, 0, 30);
+            Main();
             if(carriedRek != null)
             {
                 carriedRek.Move(this.x, this.y, this.z);

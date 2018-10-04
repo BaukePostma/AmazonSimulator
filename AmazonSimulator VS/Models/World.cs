@@ -13,28 +13,56 @@ namespace Models
         Robot r;
         Truck t;
         Dijkstra d;
-
+        public List<Node> NodeList = new List<Node>();
+        public void addNode(char node, double x, double y, double z)
+        {
+            Node n = new Node(node, x, y, z);
+            NodeList.Add(n);
+        }
         public World()
         {
-            Dijkstra g = new Dijkstra();
-            Node testnode = new Node('A',0,0,0);
-            Node endnode = new Node('D',30,0,30);
-           
-            g.addNode(testnode, new Dictionary<char, int>() { { 'B', 7 }, { 'C', 8 } });
-  
-          
-
-           // g.shortest_path('A', 'H').ForEach(x => Console.WriteLine(x));
-            t = SpawnTruck(-20,0,0);
+            // Create the graph, and create the nodes the robot can move to
             d = new Dijkstra();
-            List<char> paths = d.shortest_path('A','F');
+
+            addNode('A', 0, 0, 0);
+            addNode('B', 15, 0, 0);
+            addNode('C', 30, 0, 0);
+            addNode('D', 0, 0, 30);
+            addNode('E', 30, 0, 30);
+
+            // g.shortest_path('A', 'H').ForEach(x => Console.WriteLine(x));
+            t = SpawnTruck(-20,0,0);
+           // List<char> paths = d.shortest_path('A','F');
             Rek q = CreateRek(-100,0,0);
             r = CreateRobot(0, 0, 0);
 
-            r.PickupRek();
+            CommandPickup();
            // MoveModel(r, 50, 0, 0);
         }
+        //
 
+            public void CommandPickup()
+        {
+            // Tell a robot to come pick up an item
+            r.idle = false;
+            r.SetRoute(GenerateRoute('A', 'C'), 'C');
+            r.PickupRek();
+        }
+        /// <summary>
+        /// Returns a route to a positon , and back again
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns> A list to and from the target</returns>
+        public List<char> GenerateRoute(char start , char end)
+        {
+            List<char> Route = d.shortest_path(start,end);
+            List<char> Terugweg = d.shortest_path(end,start);
+            Route.Reverse();
+            Terugweg.Reverse();
+            Route.AddRange(Terugweg);
+            return Route;
+        }
         private Truck SpawnTruck(double x, double y, double z)
         {
             Truck t = new Truck(x, y, z, 0, 0, 0);
@@ -131,8 +159,6 @@ namespace Models
 
         public bool Update(int tick)
         {
-           // r.MoveTo(30, 0, 30);
-           // t.MoveTo(30, 0, 0);
             for (int i = 0; i < worldObjects.Count; i++)
             {
                 Abstract_Model u = worldObjects[i];

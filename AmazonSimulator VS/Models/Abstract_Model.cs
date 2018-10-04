@@ -23,13 +23,15 @@ namespace Models
         public double rotationZ { get { return _rZ; } }
 
         public bool needsUpdate = true;
-
+        // Using nodes instead of doubles, delete these later
         protected double target_x = 0;
         protected double target_y = 0;
         protected double target_z = 0;
+
+        protected List<Node> PathList;
         bool destinationreached = true;
         bool isMoving = false;
-        public double speed = 0.01;
+        public double speed = 0.1;
 
         public virtual void Move(double x, double y, double z) {
             this._x = x;
@@ -136,7 +138,11 @@ namespace Models
             // 3 times, for each axis
 
         }
-
+        // Calls Moveto using a node instead of coordinates
+        public virtual void MoveTo(Node node)
+        {
+            MoveTo(node.x, node.y, node.z);
+        }
         public virtual void Rotate(double rotationX, double rotationY, double rotationZ) {
             this._rX = rotationX;
             this._rY = rotationY;
