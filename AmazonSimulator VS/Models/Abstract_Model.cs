@@ -28,10 +28,13 @@ namespace Models
         protected double target_y = 0;
         protected double target_z = 0;
 
+        protected List<Node> route;
+        protected Node TargetNode;
+
         protected List<Node> PathList;
-        bool destinationreached = true;
-        bool isMoving = false;
-        public double speed = 0.1;
+        public bool destinationreached = true;
+        public bool isMoving = false;
+        public double speed = 0.11;
 
         public virtual void Move(double x, double y, double z) {
             this._x = x;
@@ -77,14 +80,21 @@ namespace Models
                     if (target_x >x)
                     {
                         _x = x + speed;
+
                     }
                     else
                     {
                         _x = x - speed;
                     }
-                    _x = x +speed;
-                   // needsUpdate = true;
-                   
+                    if (Math.Abs(target_x - x) < speed)
+                    {
+                        _x = target_x;
+                        Console.WriteLine("Less than " + speed + " x diff");
+
+                    }
+                    //  _x = x +speed;
+                    // needsUpdate = true;
+
                 }
                 if (y != target_y)
                 {
@@ -96,9 +106,16 @@ namespace Models
                     {
                         _y = y - speed;
                     }
-                    _y = y + speed;
-                  //  needsUpdate = true;
-                 
+     
+                    if (Math.Abs(target_y - y) < speed)
+                    {
+
+                        _y = target_y;
+                        Console.WriteLine("Less than "+speed+" y diff");
+                    }
+                    // _y = y + speed;
+                    //  needsUpdate = true;
+
                 }
                 if (z != target_z)
                 {
@@ -110,8 +127,14 @@ namespace Models
                     {
                         _z = z - speed;
                     }
-                    _z = z + speed;
-                   
+                    //  _z = z + speed;
+                    if (Math.Abs(target_z - z) < speed)
+                    {
+
+                        _z = target_z;
+                        Console.WriteLine("Less than " + speed + " z diff");
+                    }
+
                 }
                 needsUpdate = true;
                 return;

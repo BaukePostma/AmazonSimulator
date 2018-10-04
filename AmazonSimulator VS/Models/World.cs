@@ -45,7 +45,7 @@ namespace Models
         {
             // Tell a robot to come pick up an item
             r.idle = false;
-            r.SetRoute(GenerateRoute('A', 'C'), 'C');
+            r.SetRoute(GenerateRoute('A', 'E'), 'E');
             r.PickupRek();
         }
         /// <summary>

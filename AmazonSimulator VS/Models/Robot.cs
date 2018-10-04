@@ -10,8 +10,8 @@ namespace Models {
         public bool idle {get;set;}
         Rek carriedRek;
         private World w;
-        private List<Node> route;
-        private Node TargetNode;
+
+        int position = 0;
 
 
 
@@ -37,17 +37,28 @@ namespace Models {
             {
                 return;
             }
-         
-            //Check if the robot is at it's destination
-            if (this.x == TargetNode.x && this.y ==TargetNode.y && this.z == TargetNode.z )
+
+            this.MoveTo(route[position]);
+            // Check if the robot has reached a node
+            if (this.x == route[position].x && this.y == route[position].y && this.z == route[position].z)
             {
-                DropOffRek();
+                //Check if the robot is at it's destination
+                if (this.x == TargetNode.x && this.y == TargetNode.y && this.z == TargetNode.z)
+                {
+                    DropOffRek();
+                }
+                // Else,check if this is the last stop
+                else if (route[route.Count-1] ==route[position])
+                {
+                    idle = true;
+                    return;
+                }
+                position++;
+            
+                this.isMoving = false;
             }
-            else if (this.x == route[0].x && this.y == route[0].y && this.z == route[0].z)
-            {
-                route.RemoveAt(0);
-            }
-            this.MoveTo(route[0]);
+
+           
 
         }
         /// <summary>
