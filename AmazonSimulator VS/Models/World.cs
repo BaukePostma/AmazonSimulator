@@ -49,8 +49,8 @@ namespace Models
             walle = CreateRobot(15, 0, 0);
             irongiant = CreateRobot(18, 0, 0);
             robotlist.Add(r);
-          //  robotlist.Add(walle);
-           // robotlist.Add(irongiant);
+            robotlist.Add(walle);
+            robotlist.Add(irongiant);
 
             CommandPickup();
             CommandPickup();
