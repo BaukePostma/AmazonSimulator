@@ -18,10 +18,16 @@
     <script src="MTLLoader.js"></script>
     <script src="OrbitControls.js"></script>
 
+    <div id="overlay">
+        <div>
+            <button id="startButton">Click to Play</button>
+            <p>Automatic audio playback requires a user interaction.</p>
+        </div>
+    </div>
 
-   
     <script>
-       
+        var startButton = document.getElementById('startButton');
+        startButton.addEventListener('click', Dejavu);
     </script>
     <script>
         function parseCommand(input = "") {
