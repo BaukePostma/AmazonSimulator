@@ -7,38 +7,152 @@ namespace Models
 {
     public class World : IObservable<Command>, IUpdatable
     {
-        private List<Abstract_Model> worldObjects = new List<Abstract_Model>();
+        public List<Abstract_Model> worldObjects = new List<Abstract_Model>();
         private List<IObserver<Command>> observers = new List<IObserver<Command>>();
 
-        Robot r;
-        Truck t;
+        //Robot r;
+        List<Robot> robots;
+        Trein t;
         Dijkstra d;
+        public List<Node> NodeList = new List<Node>();
+        public List<Storage> StorageSpots = new List<Storage>();
+      
+        public void addNode(char node, double x, double y, double z)
+        {
+            Node n = new Node(node, x, y, z);
+            NodeList.Add(n);
+        }
         public World()
         {
-            t = SpawnTruck(-20,0,0);
+           
+            // Create the graph, and create the nodes the robot can move to
             d = new Dijkstra();
-            List<char> paths = d.shortest_path('A','F');
-            Rek q = CreateRek(0,0,0);
-            q.Move(1, 1, 1);
-            r = CreateRobot(0, 0, 0);
+
+            addNode('A', 0, 0, 0);
+            addNode('B', 15, 0, 0);
+            addNode('C', 30, 0, 0);
+            addNode('D', 0, 0, 30);
+            addNode('E', 30, 0, 30);
+
+            Storage storage1 = new Storage(NodeList[0], 5, 0, 5, this);
+            StorageSpots.Add(storage1);
+
+            // g.shortest_path('A', 'H').ForEach(x => Console.WriteLine(x));
+            t = SpawnTrein(-60, 0, -5);
+            t.Rotate(0, 89.55, 0);
+            t.speed = 0.6;
+            // List<char> paths = d.shortest_path('A','F');
             
+            this.robots = new List<Robot>();
+            for(int i = 0; i < 2; i++)
+            {
+                Robot r = CreateRobot((i * 2) + 15, 0, 0);
+                this.robots.Add(r);
+            }
+            
+
+            //CommandPickup();
            // MoveModel(r, 50, 0, 0);
         }
-        private Truck SpawnTruck(double x, double y, double z)
+        //
+
+        public void CommandPickup(Rek k, bool atTrain, Robot _r)
         {
-            Truck t = new Truck(x, y, z, 0, 0, 0);
-            worldObjects.Add(t);
-            return t;
+            // Tell a robot to come pick up an item
+            _r.idle = false;
+            _r.rekToCarry = k;
+            if (atTrain)
+            {
+                //Als B magazijn is en A trein
+                // Move k (rekToCarry van de robot) van trein(A) naar  magazijn(B)
+                _r.SetRoute(GenerateRoute('A', 'B'), 'B');
+            } else
+            {
+                //Als B magazijn is en A trein
+                // Move k (rekToCarry van de robot) van magazijn(B) naar trein(A)
+                _r.SetRoute(GenerateRoute('B', 'A'), 'A');
+            }
+            
+            //r.PickupRek();
         }
-        private Rek CreateRek(double x, double y, double z)
+        /// <summary>
+        /// Returns a route to a positon , and back again
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns> A list to and from the target</returns>
+        public List<char> GenerateRoute(char start , char end)
         {
+            List<char> Route = d.shortest_path(start,end);
+            List<char> Terugweg = d.shortest_path(end,start);
+            Route.Reverse();
+            Terugweg.Reverse();
+            Route.AddRange(Terugweg);
+            return Route;
+        }
+
+        private Trein SpawnTrein(double x, double y, double z)
+        {
+            Trein t = new Trein(x, y, z, 0, 0, 0, this);
+            worldObjects.Add(t);
+            CreateRek(15,0,-30);
+           
+            return t;
+
+        }
+
+        public void TrainArrived(Trein _t, Rek cargo)
+        {
+            //Word aangeroepen wanneer een trein (_t) bij het loading dock is
+            cargo.readyforpickup = true;
+            
+            //Loop door robots en laat een idle robot de cargo ophalen
+            foreach(Robot r in this.robots)
+            {
+                if (r.idle)
+                {
+                    CommandPickup(cargo, true, r);
+                    r.idle = false;
+                    break;
+                }
+            }
+
+            //Loop door robots een laat een idle robot een rek uit de storage naar de trein brengen
+            foreach (Robot r in this.robots)
+            {
+                foreach (Storage s in this.StorageSpots)
+                {
+                    for (int i = 0; i < s.Stored.Count; i++)
+                    {
+                        Rek rek = s.Stored[i];
+                        if (r.idle)
+                        {
+                            s.Stored.Remove(rek);
+                            rek.readyforpickup = true;
+                            CommandPickup(rek, false, r);
+
+                        }
+                    }
+                }
+            }
+
+        }
+            
+        public Rek CreateRek(double x, double y, double z)
+        {
+            
             Rek rek = new Rek (x, y, z, 0, 0, 0);
             worldObjects.Add(rek);
             return rek;
         }
         private Robot CreateRobot(double x, double y, double z)
         {
-            Robot constructorrobot = new Robot(x, y, z, 0, 0, 0);
+            Robot constructorrobot = new Robot(x, y, z, 0, 0, 0,this);
+
+            constructorrobot.idle = true;
+            constructorrobot.speed = 0.6;
+
+
             worldObjects.Add(constructorrobot);
             return constructorrobot;
         }
@@ -120,8 +234,9 @@ namespace Models
 
         public bool Update(int tick)
         {
-           // r.MoveTo(30, 0, 30);
-           // t.MoveTo(30, 0, 0);
+
+            
+
             for (int i = 0; i < worldObjects.Count; i++)
             {
                 Abstract_Model u = worldObjects[i];
