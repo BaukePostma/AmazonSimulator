@@ -151,13 +151,15 @@ namespace Models {
                             {
                                 if (!item.IsFull())
                                 {
-                                    List<char> Route = w.d.shortest_path(DropOffAt.name, item.DropoffNode.name);
-                                   // w.GenerateRoute
-                                    Route.Reverse();
-                                    this.SetRoute(Route, item.DropoffNode.name);
-                                    position = 0;
-                                    destinationreached = false;
-                                    return;
+                                    // Create new route, send the robot to a not-full storage area Currently crashes because of a pathfinding int overflow
+
+                                   // List<char> Route = w.d.shortest_path(DropOffAt.name, item.DropoffNode.name);
+                             
+                                   // Route.Reverse();
+                                   // this.SetRoute(Route, item.DropoffNode.name);
+                                   // position = 0;
+                                   // destinationreached = false;
+                                   // return;
                                 }
                             }
                            
