@@ -1,3 +1,7 @@
+
 function Dejavu() {
-    alert(event); // "click"
+ 
+    var audioElement = document.getElementById('music');
+    audioElement.play();
+    //alert(event); // "click"
 }
