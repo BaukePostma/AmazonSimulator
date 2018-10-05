@@ -36,6 +36,12 @@ namespace Models
         public bool isMoving = false;
         public double speed = 0.11;
 
+       /// <summary>
+       /// Set the position of the model
+       /// </summary>
+       /// <param name="x"></param>
+       /// <param name="y"></param>
+       /// <param name="z"></param>
         public virtual void Move(double x, double y, double z) {
             this._x = x;
             this._y = y;
@@ -43,6 +49,12 @@ namespace Models
 
             needsUpdate = true;
         }
+        /// <summary>
+        /// Legacy function. Hah. Probably doesnt do anything anymore but leaving it here just in case
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public virtual void SetDestination(double x,double y ,double z)
         {
             target_x = x;
@@ -58,6 +70,7 @@ namespace Models
         /// <param name="zd"></param>
         public virtual void MoveTo(double xd, double yd, double zd)
         {
+            // Lots of statements to make sulre the model moves properly
          if (!isMoving)
             {
                 // If  this is the first time moving, set the target
@@ -139,17 +152,9 @@ namespace Models
                 needsUpdate = true;
                 return;
             }
-            double x_dif = xd - x;
-            double y_dif = yd - y;
-            double z_dif = zd - z;
-
-            // Move one step, check if i need to move again
-
-            //Check if you need to move on an axis
-            // Check if you need to move less than a 'tick'
-            // if true, move the  last remaining bit
-            // if false, move the tick valye
-            // Repeat until the move is done
+          //  double x_dif = xd - x;
+           // double y_dif = yd - y;
+           // double z_dif = zd - z;
 
             if (destinationreached)
             {
@@ -158,14 +163,21 @@ namespace Models
             }
 
 
-            // 3 times, for each axis
-
         }
-        // Calls Moveto using a node instead of coordinates
+        /// <summary>
+        ///  Calls Moveto using a node instead of coordinates
+        /// </summary>
+        /// <param name="node"></param>
         public virtual void MoveTo(Node node)
         {
             MoveTo(node.x, node.y, node.z);
         }
+        /// <summary>
+        /// Sets the rotation of this model
+        /// </summary>
+        /// <param name="rotationX"></param>
+        /// <param name="rotationY"></param>
+        /// <param name="rotationZ"></param>
         public virtual void Rotate(double rotationX, double rotationY, double rotationZ) {
             this._rX = rotationX;
             this._rY = rotationY;
@@ -173,7 +185,11 @@ namespace Models
 
             needsUpdate = true;
         }
-       
+       /// <summary>
+       /// Gets called every tick
+       /// </summary>
+       /// <param name="tick"></param>
+       /// <returns></returns>
         public virtual bool Update(int tick)
         {
             if(needsUpdate) {

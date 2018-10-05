@@ -30,6 +30,9 @@ namespace Models {
             this._rY = rotationY;
             this._rZ = rotationZ;
         }
+        /// <summary>
+        /// Main loop
+        /// </summary>
         public void Main()
         {
             // If idle, dont do anything
@@ -61,8 +64,9 @@ namespace Models {
            
 
         }
+      
         /// <summary>
-        /// 
+        /// Sets the route the robot has to take
         /// </summary>
         /// <param name="points">A list of charactrse the robot has to follow</param>
         /// <param name="target"> The point where the robot has to drop off it's load</param>
@@ -94,8 +98,9 @@ namespace Models {
 
             Console.WriteLine();
         }
+      
         /// <summary>
-        /// Needs to get called when the robot is at the depot. Checks if there is an available Rek nearby and picks it up
+        ///Tell the robot to pick up a nearby Rek
         /// </summary>
         public void PickupRek()
         {
@@ -112,7 +117,7 @@ namespace Models {
                         if (q.readyforpickup == true)
                         {
                             carriedRek = q;
-                            carriedRek.Move(this.x, this.y, this.z);
+                           // carriedRek.Move(this.x+30, this.y+30, this.z);
                         }
                     }
                 }
@@ -121,7 +126,8 @@ namespace Models {
        /// <summary>
        /// Gets called when the robot reaches it's destination
        /// </summary>
-        public void DropOffRek()
+      
+  public void DropOffRek()
         {
             if (carriedRek!= null)
             {
@@ -133,7 +139,7 @@ namespace Models {
             Main();
             if(carriedRek != null)
             {
-                carriedRek.Move(this.x, this.y, this.z);
+                carriedRek.Move(this.x, this.y+0.5, this.z);
             }
             if (needsUpdate)
             {
