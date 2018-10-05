@@ -48,7 +48,7 @@ namespace Models {
                 //Check if the robot is at it's destination
                 if (this.x == TargetNode.x && this.y == TargetNode.y && this.z == TargetNode.z)
                 {
-                    DropOffRek();
+                    DropOffRek(TargetNode);
                 }
                 // Else,check if this is the last stop
                 else if (route[route.Count-1] ==route[position])
@@ -127,10 +127,19 @@ namespace Models {
        /// Gets called when the robot reaches it's destination
        /// </summary>
       
-  public void DropOffRek()
+  public void DropOffRek(Node DropOffAt)
         {
+            // Check if the robot is actually carrying a Rek
             if (carriedRek!= null)
             {
+                // Loop over all the storagespots, find the matching spot
+                for (int i = 0; i < w.StorageSpots.Count; i++)
+                {
+                    if (DropOffAt == w.StorageSpots[i].DropoffNode)
+                    {
+                        w.StorageSpots[i].AddRek(carriedRek);                    }
+                }
+                
                 // Drop off or something
             }
         }

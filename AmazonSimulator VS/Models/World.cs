@@ -14,6 +14,8 @@ namespace Models
         Truck t;
         Dijkstra d;
         public List<Node> NodeList = new List<Node>();
+        public List<Storage> StorageSpots = new List<Storage>();
+      
         public void addNode(char node, double x, double y, double z)
         {
             Node n = new Node(node, x, y, z);
@@ -21,6 +23,7 @@ namespace Models
         }
         public World()
         {
+           
             // Create the graph, and create the nodes the robot can move to
             d = new Dijkstra();
 
@@ -30,11 +33,14 @@ namespace Models
             addNode('D', 0, 0, 30);
             addNode('E', 30, 0, 30);
 
+            Storage storage1 = new Storage(NodeList[0], 5, 0, 5, this);
+            StorageSpots.Add(storage1);
+
             // g.shortest_path('A', 'H').ForEach(x => Console.WriteLine(x));
             t = SpawnTruck(-20,0,0);
            // List<char> paths = d.shortest_path('A','F');
             Rek q = CreateRek(-100,0,0);
-            r = CreateRobot(0, 0, 0);
+            r = CreateRobot(15, 0, 0);
 
             CommandPickup();
            // MoveModel(r, 50, 0, 0);
@@ -45,7 +51,7 @@ namespace Models
         {
             // Tell a robot to come pick up an item
             r.idle = false;
-            r.SetRoute(GenerateRoute('A', 'E'), 'E');
+            r.SetRoute(GenerateRoute('B', 'A'), 'A');
             r.PickupRek();
         }
         /// <summary>
