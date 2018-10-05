@@ -34,7 +34,9 @@ namespace Models
         protected List<Node> PathList;
         public bool destinationreached = true;
         public bool isMoving = false;
-        public double speed = 0.11;
+
+        // Speed may not be lower than 0,1
+        public double speed = 0.3;
 
        /// <summary>
        /// Set the position of the model
@@ -132,7 +134,7 @@ namespace Models
                 }
                 if (z != target_z)
                 {
-                    if (target_z > x)
+                    if (target_z > z)
                     {
                         _z = z + speed;
                     }

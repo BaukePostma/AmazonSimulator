@@ -12,7 +12,7 @@ namespace Models {
         private World w;
 
         int position = 0;
-
+       
 
 
     public Robot(double x, double y, double z, double rotationX, double rotationY, double rotationZ,World w)
@@ -137,7 +137,9 @@ namespace Models {
                 {
                     if (DropOffAt == w.StorageSpots[i].DropoffNode)
                     {
-                        w.StorageSpots[i].AddRek(carriedRek);                    }
+                        w.StorageSpots[i].AddRek(carriedRek);
+                        carriedRek = null;
+                    }
                 }
                 
                 // Drop off or something

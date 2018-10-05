@@ -33,8 +33,25 @@ namespace Models
             addNode('D', 0, 0, 30);
             addNode('E', 30, 0, 30);
 
-            Storage storage1 = new Storage(NodeList[0], 5, 0, 5, this);
+            addNode('F', 15, 0, 5);
+            addNode('G', 12, 0, 5);
+            addNode('H', 15, 0, 15);
+            addNode('I', 12, 0, 15);
+            addNode('J', 21, 0, 15);
+            addNode('K', 21, 0, 12);
+            addNode('L', 21, 0, 25);
+            addNode('M', 12, 0, 25);
+            addNode('N', 10, 0, 30);
+            addNode('O', 30, 0, 15);
+
+            Storage storage1 = new Storage(NodeList[6], 25, 5, 5, 0, 5, this);
+            Storage storage2 = new Storage(NodeList[8], 25, 5, 5, 0, 12.5, this);
+            Storage storage3 = new Storage(NodeList[10], 15, 5, 20, 0, 5, this);
+            Storage storage4 = new Storage(NodeList[12], 25, 5, 5, 0, 22.5, this);
             StorageSpots.Add(storage1);
+            StorageSpots.Add(storage2);
+            StorageSpots.Add(storage3);
+            StorageSpots.Add(storage4);
 
             // g.shortest_path('A', 'H').ForEach(x => Console.WriteLine(x));
             t = SpawnTruck(-20,0,0);
@@ -46,12 +63,17 @@ namespace Models
            // MoveModel(r, 50, 0, 0);
         }
         //
-
+        /// <summary>
+        /// Tell a robot to pick up an item
+        /// </summary>
             public void CommandPickup()
         {
+            Random rand = new Random();
+            int targetstorage =rand.Next();
+
             // Tell a robot to come pick up an item
             r.idle = false;
-            r.SetRoute(GenerateRoute('B', 'A'), 'A');
+            r.SetRoute(GenerateRoute('B', 'M'), 'M');
             r.PickupRek();
         }
         /// <summary>
