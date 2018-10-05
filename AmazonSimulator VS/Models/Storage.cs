@@ -30,7 +30,7 @@ namespace Models
             this.x_size = x_size;
             this.z_size = z_size;
 
-            Max_Barrels = Convert.ToInt64(Math.Floor(x_size / 2.5));
+            Max_Barrels = Convert.ToInt64(Math.Floor(x_size / 1.5));
  
             this.w = currentworld;
 
@@ -40,7 +40,7 @@ namespace Models
 
             for (int i = 0; i < q; i++)
             {
-                Rek newrek = new Rek((i*2.5)+position_x,0, position_z + 2.5,0,0,0);
+                Rek newrek = new Rek((i*1.5)+position_x,0, position_z + 2.5,0,0,0);
                 newrek.readyforpickup = false;
 
                 // If i have spare time later, edit this to give it a random position in the list/ array
@@ -56,7 +56,7 @@ namespace Models
             {
                 if (Stored.ElementAtOrDefault(i) == null)
                 {
-                    r.Move((i*2.5)+position_x,0,position_z+2.5);
+                    r.Move((i*1.5)+position_x,0,position_z+2.5);
                     Stored.Add(r);
                     return;
                 }
