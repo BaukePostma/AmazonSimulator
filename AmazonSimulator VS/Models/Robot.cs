@@ -17,6 +17,7 @@ namespace Models {
 
     public Robot(double x, double y, double z, double rotationX, double rotationY, double rotationZ,World w)
         {
+            idle = true;
             this.w = w;
             route = new List<Node>();
             this.type = "robot";
@@ -54,6 +55,7 @@ namespace Models {
                 else if (route[route.Count-1] ==route[position])
                 {
                     idle = true;
+                    w.CommandPickup();
                     return;
                 }
                 position++;
@@ -72,6 +74,7 @@ namespace Models {
         /// <param name="target"> The point where the robot has to drop off it's load</param>
         public void SetRoute(List<char> points,char target)
         {
+            route.Clear();
             // Set the route the robot needs to take
             foreach (char char_point in points)
             {
@@ -102,7 +105,7 @@ namespace Models {
         /// <summary>
         ///Tell the robot to pick up a nearby Rek
         /// </summary>
-        public void PickupRek()
+        public bool PickupRek()
         {
             // Check if the robot is at the depot
             if (atPickupPoint)
@@ -116,12 +119,15 @@ namespace Models {
 
                         if (q.readyforpickup == true)
                         {
+                            q.readyforpickup = false;
                             carriedRek = q;
+                            return true;
                            // carriedRek.Move(this.x+30, this.y+30, this.z);
                         }
                     }
                 }
             }
+            return false;
         }
        /// <summary>
        /// Gets called when the robot reaches it's destination
@@ -137,6 +143,25 @@ namespace Models {
                 {
                     if (DropOffAt == w.StorageSpots[i].DropoffNode)
                     {
+                        // Spot matches. Check if the spot isnt full by now. If so, redirect it to a different spot
+                        if (w.StorageSpots[i].IsFull())
+                        {
+                            // Search for a storage area with an empty spot
+                            foreach (var item in w.StorageSpots)
+                            {
+                                if (!item.IsFull())
+                                {
+                                    List<char> Route = w.d.shortest_path(DropOffAt.name, item.DropoffNode.name);
+                                   // w.GenerateRoute
+                                    Route.Reverse();
+                                    this.SetRoute(Route, item.DropoffNode.name);
+                                    position = 0;
+                                    destinationreached = false;
+                                    return;
+                                }
+                            }
+                           
+                        }
                         w.StorageSpots[i].AddRek(carriedRek);
                         carriedRek = null;
                     }

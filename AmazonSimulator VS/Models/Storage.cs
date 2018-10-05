@@ -30,7 +30,7 @@ namespace Models
             this.x_size = x_size;
             this.z_size = z_size;
 
-            Max_Barrels = Convert.ToInt64(Math.Floor(x_size / 1.5));
+            Max_Barrels = Convert.ToInt64(Math.Floor(x_size / 6));
  
             this.w = currentworld;
 

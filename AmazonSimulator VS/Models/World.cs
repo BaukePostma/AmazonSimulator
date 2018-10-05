@@ -9,24 +9,98 @@ namespace Models
     {
         public List<Abstract_Model> worldObjects = new List<Abstract_Model>();
         private List<IObserver<Command>> observers = new List<IObserver<Command>>();
-
+        private List<Robot> robotlist = new List<Robot>();
         Robot r;
+        Robot walle;
+        Robot irongiant;
+
         Truck t;
-        Dijkstra d;
+        public Dijkstra d;
         public List<Node> NodeList = new List<Node>();
         public List<Storage> StorageSpots = new List<Storage>();
       
-        public void addNode(char node, double x, double y, double z)
-        {
-            Node n = new Node(node, x, y, z);
-            NodeList.Add(n);
-        }
+
+       
         public World()
         {
            
             // Create the graph, and create the nodes the robot can move to
             d = new Dijkstra();
+            InitialNodes();
+           
+            // Create the four storage area's 
+            Storage storage1 = new Storage(NodeList[6], 25, 5, 3, 0, 5, this);
+            Storage storage2 = new Storage(NodeList[8], 25, 5, 3, 0, 12.5, this);
+            Storage storage3 = new Storage(NodeList[10], 15, 5, 20, 0, 5, this);
+            Storage storage4 = new Storage(NodeList[12], 25, 5, 3, 0, 22.5, this);
+            StorageSpots.Add(storage1);
+            StorageSpots.Add(storage2);
+            StorageSpots.Add(storage3);
+            StorageSpots.Add(storage4);
 
+            //Create the train
+            t = SpawnTruck(-20,0,0);
+            //Testing  Rek
+            Rek q = CreateRek(-100,0,0);
+            Rek w = CreateRek(-100, 0, 0);
+            Rek z = CreateRek(-100, 0, 0);
+            // Create the robots
+            r = CreateRobot(12, 0, 0);
+            walle = CreateRobot(15, 0, 0);
+            irongiant = CreateRobot(18, 0, 0);
+            robotlist.Add(r);
+          //  robotlist.Add(walle);
+           // robotlist.Add(irongiant);
+
+            CommandPickup();
+            CommandPickup();
+                CommandPickup();
+           // MoveModel(r, 50, 0, 0);
+        }
+        public void addNode(char node, double x, double y, double z)
+        {
+            Node n = new Node(node, x, y, z);
+            NodeList.Add(n);
+        }
+        //
+        /// <summary>
+        /// Tell a robot to pick up an item
+        /// </summary>
+        public void CommandPickup()
+        {
+            char start = 'B';
+            char stop = ' ';
+            // Check which storagespot still has space
+            for (int i = 0; i < StorageSpots.Count; i++)
+            {
+                if (!StorageSpots[i].IsFull())
+                {
+                    stop = StorageSpots[i].DropoffNode.name;
+                }
+            }
+            // Tell a  nearby robot to  pick up an item
+            for (int i = 0; i < robotlist.Count; i++)
+            {
+                if (robotlist[i].idle)
+                {
+                  
+                    if (robotlist[i].PickupRek())
+                    {
+                        robotlist[i].idle = false;
+                        robotlist[i].SetRoute(GenerateRoute(start, stop), stop);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No Nearby barrels to pick up for robot "+ robotlist[i]);
+                    }
+                  
+                    return;
+                }
+                
+            }
+        }
+        public void InitialNodes()
+        {
             addNode('A', 0, 0, 0);
             addNode('B', 15, 0, 0);
             addNode('C', 30, 0, 0);
@@ -43,46 +117,8 @@ namespace Models
             addNode('M', 12, 0, 25);
             addNode('N', 10, 0, 30);
             addNode('O', 30, 0, 15);
-
-            Storage storage1 = new Storage(NodeList[6], 25, 5, 3, 0, 5, this);
-            Storage storage2 = new Storage(NodeList[8], 25, 5, 3, 0, 12.5, this);
-            Storage storage3 = new Storage(NodeList[10], 15, 5, 20, 0, 5, this);
-            Storage storage4 = new Storage(NodeList[12], 25, 5, 3, 0, 22.5, this);
-            StorageSpots.Add(storage1);
-            StorageSpots.Add(storage2);
-            StorageSpots.Add(storage3);
-            StorageSpots.Add(storage4);
-
-            // g.shortest_path('A', 'H').ForEach(x => Console.WriteLine(x));
-            t = SpawnTruck(-20,0,0);
-           // List<char> paths = d.shortest_path('A','F');
-            Rek q = CreateRek(-100,0,0);
-            r = CreateRobot(15, 0, 0);
-
-            CommandPickup();
-           // MoveModel(r, 50, 0, 0);
         }
-        //
-        /// <summary>
-        /// Tell a robot to pick up an item
-        /// </summary>
-            public void CommandPickup()
-        {
-            char start = 'B';
-            char stop = ' ';
 
-            for (int i = 0; i < StorageSpots.Count; i++)
-            {
-                if (!StorageSpots[i].IsFull())
-                {
-                    stop = StorageSpots[i].DropoffNode.name;
-                }
-            }
-            // Tell a robot to come pick up an item
-            r.idle = false;
-            r.SetRoute(GenerateRoute(start, stop), stop);
-            r.PickupRek();
-        }
         /// <summary>
         /// Returns a route to a positon , and back again
         /// </summary>
@@ -96,6 +132,12 @@ namespace Models
             Route.Reverse();
             Terugweg.Reverse();
             Route.AddRange(Terugweg);
+            return Route;
+        }
+        public List<char> GenerateRoute(char start, char end,bool onewayticket)
+        {
+            List<char> Route = d.shortest_path(start, end);
+            Route.Reverse();
             return Route;
         }
         private Truck SpawnTruck(double x, double y, double z)
