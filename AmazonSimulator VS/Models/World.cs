@@ -68,12 +68,19 @@ namespace Models
         /// </summary>
             public void CommandPickup()
         {
-            Random rand = new Random();
-            int targetstorage =rand.Next();
+            char start = 'B';
+            char stop = ' ';
 
+            for (int i = 0; i < StorageSpots.Count; i++)
+            {
+                if (!StorageSpots[i].IsFull())
+                {
+                    stop = StorageSpots[i].DropoffNode.name;
+                }
+            }
             // Tell a robot to come pick up an item
             r.idle = false;
-            r.SetRoute(GenerateRoute('B', 'M'), 'M');
+            r.SetRoute(GenerateRoute(start, stop), stop);
             r.PickupRek();
         }
         /// <summary>
