@@ -8,9 +8,11 @@ namespace Models {
     {
         bool atPickupPoint = true;
         public bool idle {get;set;}
-        Rek carriedRek;
-        private World w;
+        public Rek rekToCarry; // Rek wat de robot op moet halen
+        Rek carriedRek;// Rek wat de robot vast heeft
         public Trein trainToLoad; // De trein welke geladen moet worden
+        private World w;
+
         int position = 0;
        
 
@@ -56,10 +58,28 @@ namespace Models {
             if (this.x == route[position].x && this.y == route[position].y && this.z == route[position].z)
             {
                 //Check if the robot is at it's destination
-                if (this.x == TargetNode.x && this.y == TargetNode.y && this.z == TargetNode.z)
-                {
-                    DropOffRek(TargetNode);
-                }
+                    if (this.x == TargetNode.x && this.y == TargetNode.y && this.z == TargetNode.z)
+                    {
+                        if (carriedRek != null)
+                        {
+                            
+                            if(this.trainToLoad != null)
+                            {
+                                this.trainToLoad.Load(carriedRek);
+                                this.carriedRek = null;
+                                this.trainToLoad = null;
+                            }
+                            else
+                            {
+                                DropOffRek(TargetNode);
+                            }
+                        }
+                        else
+                        {
+                            PickupRek(rekToCarry);
+                        }
+
+                    }
                 // Else,check if this is the last stop
                 else if (route[route.Count-1] ==route[position])
                 {
@@ -67,7 +87,7 @@ namespace Models {
                     idle = true;
                     position = 0;
                     isMoving = false;
-                    w.CommandPickup();
+                    w.CommandPickup(carriedRek,true);
                     return;
                 }
                 position++;
@@ -110,7 +130,21 @@ namespace Models {
                 }
             }
         }
-      
+        /// <summary>
+        ///Tell the robot to pick up a specific Rek
+        /// </summary>
+        public void PickupRek(Rek k)
+        {
+            if (k.readyforpickup == true)
+            {
+                carriedRek = k;
+                // carriedRek.Move(this.x+30, this.y+30, this.z);
+            }
+            else
+            {
+                Console.WriteLine("Tried to pickup unready Rek");
+            }
+        }
         /// <summary>
         ///Tell the robot to pick up a nearby Rek
         /// </summary>

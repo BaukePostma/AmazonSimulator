@@ -33,16 +33,16 @@ namespace Models
             this._rZ = rotationZ;
 
             this.CarriedRek = this._world.CreateRek(this.x, this.y, this.z);
-
+            _world.worldObjects.Add(this.CarriedRek);
             _state = TreinState.TRAIN_INCOMMING;
 
         }
 
-        
+
 
         int AtLoadingDock()
         {
-            
+
             Rek cargo = this.Unload();
             this.CarriedRek = null;
             this._world.TrainArrived(this, cargo);
@@ -61,6 +61,8 @@ namespace Models
 
         Rek Unload()
         {
+            _world.worldObjects.Add(this.CarriedRek);
+            _world.CommandPickup(this.CarriedRek,true);
             return this.CarriedRek;
         }
 
@@ -69,7 +71,7 @@ namespace Models
         {
             this.CarriedRek = cargo;
         }
-        
+
         void Depart()
         {
             this._state = TreinState.TRAIN_DEPARTING;
@@ -84,7 +86,7 @@ namespace Models
                     this.MoveTo(15, 0, -5, this.AtLoadingDock);
                     break;
                 case TreinState.AT_LOADING_DOCK:
-                    if(CarriedRek != null) // Als we een rek hebben gekregen sinds de laatste Update()
+                    if (CarriedRek != null) // Als we een rek hebben gekregen sinds de laatste Update()
                     {
                         Depart();
                     }
@@ -94,13 +96,13 @@ namespace Models
                     break;
             }
 
-            if(CarriedRek != null)
+            if (CarriedRek != null)
             {
                 CarriedRek.Move(this.x, this.y, this.z);
             }
-            
 
-           
+
+
             // CreateRek(15,0,-5);
 
             if (needsUpdate)

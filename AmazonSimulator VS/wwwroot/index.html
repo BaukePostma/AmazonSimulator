@@ -184,7 +184,7 @@
                             Rek.position.z = 500;
                             scene.add(Rek);
                             worldObjects[command.parameters.guid] = Rek;
-                            loadOBJModel("/3dmodels/", "train.obj", "/3dmodels/", "train.mtl", (mesh) => {
+                            loadOBJModel("/3dmodels/", "Train.obj", "/3dmodels/", "Train.mtl", (mesh) => {
                                 mesh.scale.set(0.1, 0.1, 0.1);
                                 Rek.add(mesh)
                             });

@@ -14,7 +14,7 @@ namespace Models
         Robot walle;
         Robot irongiant;
 
-        Trein t;
+       
         public Dijkstra d;
         public List<Node> NodeList = new List<Node>();
         public List<Storage> StorageSpots = new List<Storage>();
@@ -39,16 +39,16 @@ namespace Models
             StorageSpots.Add(storage4);
 
             //Create the train
-            t = SpawnTrein(-60,0,-5);
-            
+            SpawnTrein(-60, 0, -5);
+
             //a few Rek's for testing purposes
             Rek q = CreateRek(12,0,0);
             Rek w = CreateRek(15, 0, 0);
             Rek z = CreateRek(18, 0, 0);
-       /*     Rek a = CreateRek(18, 0, 0);
+            Rek a = CreateRek(18, 0, 0);
             Rek b = CreateRek(18, 0, 0);
             Rek c = CreateRek(18, 0, 0);
-            */
+
             // Create the robots
             r = CreateRobot(12, 0, 0);
             walle = CreateRobot(15, 0, 0);
@@ -58,9 +58,9 @@ namespace Models
             robotlist.Add(irongiant);
 
             // Each time this function is called, tells a single robot to pick up a Rek. There are three robots
-            CommandPickup();
-            CommandPickup();
-            CommandPickup();
+         //   CommandPickup();
+          //  CommandPickup();
+          //  CommandPickup();
 
 
         }
@@ -80,7 +80,7 @@ namespace Models
         /// <summary>
         /// Tell a single, nearby  robot to pick up an item
         /// </summary>
-        public void CommandPickup()
+        public void CommandPickup(Rek k, bool atTrain)
         {
             char start = 'B';
             char stop = ' ';
@@ -97,7 +97,22 @@ namespace Models
             {
                 if (robotlist[i].idle)
                 {
-                  
+                    this.robotlist[i].idle = false;
+                  //  this.robotlist[i].idle = k;
+                    robotlist[i].idle = false;
+                    robotlist[i].rekToCarry = k;
+                    if (atTrain)
+                    {
+                        //Als B magazijn is en A trein
+                        // Move k (rekToCarry van de robot) van trein(A) naar  magazijn(B)
+                        robotlist[i].SetRoute(GenerateRoute('A', 'B'), 'B');
+                    }
+                    else
+                    {
+                        //Als B magazijn is en A trein
+                        // Move k (rekToCarry van de robot) van magazijn(B) naar trein(A)
+                        robotlist[i].SetRoute(GenerateRoute('B', 'A'), 'A');
+                    }
                     if (robotlist[i].PickupRek())
                     {
                         robotlist[i].idle = false;
@@ -159,25 +174,15 @@ namespace Models
         }
         private Trein SpawnTrein(double x, double y, double z)
         {
-            Trein t = new Trein(x, y, z, 0, 0, 0,this);
-            worldObjects.Add(t);
+            Trein t = new Trein(x, y, z, 0, 0, 0, this);
             t.Rotate(0, 89.55, 0);
             t.speed = 0.6;
+            worldObjects.Add(t);
+            worldObjects.Add(t.CarriedRek);
+            //CreateRek(15,0,-30);
+
             return t;
         }
-        public Rek CreateRek(double x, double y, double z)
-        {
-            Rek rek = new Rek (x, y, z, 0, 0, 0);
-            worldObjects.Add(rek);
-            return rek;
-        }
-        private Robot CreateRobot(double x, double y, double z)
-        {
-            Robot constructorrobot = new Robot(x, y, z, 0, 0, 0,this);
-            worldObjects.Add(constructorrobot);
-            return constructorrobot;
-        }
-
         public void TrainArrived(Trein _t, Rek cargo)
         {
             //Word aangeroepen wanneer een trein (_t) bij het loading dock is
@@ -188,7 +193,7 @@ namespace Models
             {
                 if (r.idle)
                 {
-                    CommandPickup();
+                    CommandPickup(cargo, true);
                     r.idle = false;
                     break;
                 }
@@ -207,7 +212,7 @@ namespace Models
                             s.Stored.Remove(rek);
                             rek.readyforpickup = true;
                             r.trainToLoad = _t;
-                            CommandPickup();
+                            CommandPickup(rek, false);
                             r.idle = false;
                         }
                     }
@@ -215,6 +220,7 @@ namespace Models
             }
 
         }
+
         public void TrainDeparted(Trein _t)
         {
             // Delete oude trein
@@ -223,6 +229,19 @@ namespace Models
 
             //Maak nieuwe trein
             this.SpawnTrein(-60, 0, -5);
+        }
+
+        public Rek CreateRek(double x, double y, double z)
+        {
+            Rek rek = new Rek (x, y, z, 0, 0, 0);
+            worldObjects.Add(rek);
+            return rek;
+        }
+        private Robot CreateRobot(double x, double y, double z)
+        {
+            Robot constructorrobot = new Robot(x, y, z, 0, 0, 0,this);
+            worldObjects.Add(constructorrobot);
+            return constructorrobot;
         }
         //public void MoveModel(Abstract_Model model,double x, double y , double z)
         //{
