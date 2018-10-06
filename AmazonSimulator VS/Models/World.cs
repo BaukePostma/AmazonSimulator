@@ -29,10 +29,10 @@ namespace Models
             InitialNodes();
            
             // Create the four storage area's 
-            Storage storage1 = new Storage(NodeList[6], 25, 5, 3, 0, 5, this);
-            Storage storage2 = new Storage(NodeList[8], 25, 5, 3, 0, 12.5, this);
-            Storage storage3 = new Storage(NodeList[10], 15, 5, 20, 0, 5, this);
-            Storage storage4 = new Storage(NodeList[12], 25, 5, 3, 0, 22.5, this);
+            Storage storage1 = new Storage(NodeList[6], 10, 5, 3, 0, 5, this);
+            Storage storage2 = new Storage(NodeList[8], 10, 5, 3, 0, 12.5, this);
+            Storage storage3 = new Storage(NodeList[10], 35, 5, 20, 0, 5, this);
+            Storage storage4 = new Storage(NodeList[12], 10, 5, 3, 0, 22.5, this);
             StorageSpots.Add(storage1);
             StorageSpots.Add(storage2);
             StorageSpots.Add(storage3);
@@ -40,23 +40,37 @@ namespace Models
 
             //Create the train
             t = SpawnTruck(-20,0,0);
-            //Testing  Rek
-            Rek q = CreateRek(-100,0,0);
-            Rek w = CreateRek(-100, 0, 0);
-            Rek z = CreateRek(-100, 0, 0);
+
+            //a few Rek's for testing purposes
+            Rek q = CreateRek(12,0,0);
+            Rek w = CreateRek(15, 0, 0);
+            Rek z = CreateRek(18, 0, 0);
+            Rek a = CreateRek(18, 0, 0);
+            Rek b = CreateRek(18, 0, 0);
+            Rek c = CreateRek(18, 0, 0);
+
             // Create the robots
             r = CreateRobot(12, 0, 0);
             walle = CreateRobot(15, 0, 0);
             irongiant = CreateRobot(18, 0, 0);
             robotlist.Add(r);
-           // robotlist.Add(walle);
-          //  robotlist.Add(irongiant);
+            robotlist.Add(walle);
+            robotlist.Add(irongiant);
 
+            // Each time this function is called, tells a single robot to pick up a Rek. There are three robots
             CommandPickup();
             CommandPickup();
-                CommandPickup();
-           // MoveModel(r, 50, 0, 0);
+            CommandPickup();
+
+
         }
+        /// <summary>
+        /// Add a 3D node to the Nodelist
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public void addNode(char node, double x, double y, double z)
         {
             Node n = new Node(node, x, y, z);
@@ -64,7 +78,7 @@ namespace Models
         }
         //
         /// <summary>
-        /// Tell a robot to pick up an item
+        /// Tell a single, nearby  robot to pick up an item
         /// </summary>
         public void CommandPickup()
         {
@@ -99,6 +113,9 @@ namespace Models
                 
             }
         }
+        /// <summary>
+        /// Set the initial 3D nodes for the nodelist
+        /// </summary>
         public void InitialNodes()
         {
             addNode('A', 0, 0, 0);
@@ -122,8 +139,8 @@ namespace Models
         /// <summary>
         /// Returns a route to a positon , and back again
         /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
+        /// <param name="start">start char</param>
+        /// <param name="end">end char</param>
         /// <returns> A list to and from the target</returns>
         public List<char> GenerateRoute(char start , char end)
         {

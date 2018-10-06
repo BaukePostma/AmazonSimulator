@@ -19,7 +19,16 @@ namespace Models
         double z_size;
 
         public Node DropoffNode;
-
+        /// <summary>
+        /// Storage area to store barrels
+        /// </summary>
+        /// <param name="n">The node the robot ahs to reach to drop off it's load. </param>
+        /// <param name="x_size">Horizontal size</param>
+        /// <param name="z_size">Vertical size</param>
+        /// <param name="x_position">position</param>
+        /// <param name="y_position">position</param>
+        /// <param name="z_position">position</param>
+        /// <param name="currentworld">A reference to the current world object</param>
         public Storage(Node n,double x_size,double z_size, double x_position, double y_position, double z_position,World currentworld)
         {
             DropoffNode = n;
@@ -30,13 +39,13 @@ namespace Models
             this.x_size = x_size;
             this.z_size = z_size;
 
-            Max_Barrels = Convert.ToInt64(Math.Floor(x_size / 6));
+            Max_Barrels = Convert.ToInt64(Math.Floor(x_size / 2.5));
  
             this.w = currentworld;
 
             // Have the Storage element start off with a random number of Rek's
             Random r = new Random();
-            int q = r.Next(1, 5);
+            int q = r.Next(1, 3);
 
             for (int i = 0; i < q; i++)
             {
@@ -49,6 +58,10 @@ namespace Models
             RenderRekken();
 
         }
+        /// <summary>
+        /// Accept a Rek from a robot, and store it
+        /// </summary>
+        /// <param name="r">rek to be stored</param>
         public void AddRek(Rek r)
         {
             r.readyforpickup = false;
@@ -63,7 +76,7 @@ namespace Models
             }
         }
         /// <summary>
-        /// Spawns the rekken in the Rekken list into the world
+        /// Spawns the initial rekken in the Rekken list into the world
         /// </summary>
         public void RenderRekken()
         {
@@ -76,7 +89,7 @@ namespace Models
         /// <summary>
         /// Returns a value  on whether or not the storage area is full
         /// </summary>
-        /// <returns></returns>
+        /// <returns> Whether or not this storage area is full</returns>
         public bool IsFull()
         {
             if (Stored.Count >=Max_Barrels)

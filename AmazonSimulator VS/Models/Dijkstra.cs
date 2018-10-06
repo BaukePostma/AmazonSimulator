@@ -32,9 +32,9 @@ namespace Models
             this.add_vertex('D', new Dictionary<char, int>() { { 'A', 30 }, { 'N', 10 } });
             this.add_vertex('E', new Dictionary<char, int>() { { 'N', 20 }, { 'O', 20 } });
 
-            this.add_vertex('F', new Dictionary<char, int>() { { 'B', 5 }, { 'G', 3 } });
+            this.add_vertex('F', new Dictionary<char, int>() { { 'B', 5 }, { 'G', 3 },{ 'F',5} });
             this.add_vertex('G', new Dictionary<char, int>() { { 'F', 3 } });
-            this.add_vertex('H', new Dictionary<char, int>() { { 'F', 10 }, { 'I', 3 },{'J',5 } });
+            this.add_vertex('H', new Dictionary<char, int>() { { 'F', 5 }, { 'I', 3 },{'J',5 } });
             this.add_vertex('I', new Dictionary<char, int>() { { 'H', 3 } });
             this.add_vertex('J', new Dictionary<char, int>() { { 'H', 5 }, { 'K', 3 }, { 'O', 5 }, { 'L', 10 } });
             this.add_vertex('K', new Dictionary<char, int>() { { 'J', 3 }  });

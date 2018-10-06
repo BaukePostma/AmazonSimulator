@@ -14,7 +14,16 @@ namespace Models {
         int position = 0;
        
 
-
+        /// <summary>
+        /// Creates a robot 
+        /// </summary>
+        /// <param name="x"> x position </param>
+        /// <param name="y">y position</param>
+        /// <param name="z">z position</param>
+        /// <param name="rotationX"> x rotation</param>
+        /// <param name="rotationY"> y rotation</param>
+        /// <param name="rotationZ">z rotation</param>
+        /// <param name="w">reference to the world</param>
     public Robot(double x, double y, double z, double rotationX, double rotationY, double rotationZ,World w)
         {
             idle = true;
@@ -54,7 +63,10 @@ namespace Models {
                 // Else,check if this is the last stop
                 else if (route[route.Count-1] ==route[position])
                 {
+                    route.Clear();
                     idle = true;
+                    position = 0;
+                    isMoving = false;
                     w.CommandPickup();
                     return;
                 }
@@ -70,7 +82,7 @@ namespace Models {
         /// <summary>
         /// Sets the route the robot has to take
         /// </summary>
-        /// <param name="points">A list of charactrse the robot has to follow</param>
+        /// <param name="points">A list of characters the robot has to follow</param>
         /// <param name="target"> The point where the robot has to drop off it's load</param>
         public void SetRoute(List<char> points,char target)
         {
@@ -97,9 +109,6 @@ namespace Models {
                     
                 }
             }
-            // Sets the target the robot has to drop it's load off
-
-            Console.WriteLine();
         }
       
         /// <summary>
@@ -107,7 +116,7 @@ namespace Models {
         /// </summary>
         public bool PickupRek()
         {
-            // Check if the robot is at the depot
+            // Check if the robot is at the depot. Obsolete?
             if (atPickupPoint)
             {
                 foreach (var item in w.worldObjects)
@@ -122,7 +131,6 @@ namespace Models {
                             q.readyforpickup = false;
                             carriedRek = q;
                             return true;
-                           // carriedRek.Move(this.x+30, this.y+30, this.z);
                         }
                     }
                 }
@@ -131,9 +139,8 @@ namespace Models {
         }
        /// <summary>
        /// Gets called when the robot reaches it's destination
-       /// </summary>
-      
-  public void DropOffRek(Node DropOffAt)
+       /// </summary>    
+        public void DropOffRek(Node DropOffAt)
         {
             // Check if the robot is actually carrying a Rek
             if (carriedRek!= null)
@@ -151,15 +158,26 @@ namespace Models {
                             {
                                 if (!item.IsFull())
                                 {
-                                    // Create new route, send the robot to a not-full storage area Currently crashes because of a pathfinding int overflow
+                                    // Create new route, send the robot to a not-full storage area.
+                                    this.route.Clear();
+                                    List<char> Route = w.d.shortest_path(DropOffAt.name, item.DropoffNode.name);
+                                    List<char> DepotRoute = w.d.shortest_path(item.DropoffNode.name, 'B');
+                                    Route.Reverse();
+                                    DepotRoute.Reverse();
+                                    Route.AddRange(DepotRoute);
+                                    this.SetRoute(Route, item.DropoffNode.name);
+                                    position = -1;
+                                    destinationreached = false;
+                                    isMoving = false;
+                                    return;
 
-                                   // List<char> Route = w.d.shortest_path(DropOffAt.name, item.DropoffNode.name);
-                             
-                                   // Route.Reverse();
-                                   // this.SetRoute(Route, item.DropoffNode.name);
-                                   // position = 0;
-                                   // destinationreached = false;
-                                   // return;
+                                   // List<char> Route = d.shortest_path(start, end);
+                                  //  List<char> Terugweg = d.shortest_path(end, start);
+                                  //  Route.Reverse();
+                                  //  Terugweg.Reverse();
+                                   // Route.AddRange(Terugweg);
+                                  //  return Route;
+
                                 }
                             }
                            
@@ -168,8 +186,7 @@ namespace Models {
                         carriedRek = null;
                     }
                 }
-                
-                // Drop off or something
+
             }
         }
         public override bool Update(int tick)
