@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Models
 {
-    public enum TreiState
+    public enum TreinState
     {
         TRAIN_INCOMMING,
         AT_LOADING_DOCK,
@@ -15,7 +15,7 @@ namespace Models
     public class Trein : Abstract_Model
     {
         World _world;
-        TreiState _state;
+        TreinState _state;
 
         public Rek CarriedRek;
 
@@ -34,7 +34,7 @@ namespace Models
 
             this.CarriedRek = this._world.CreateRek(this.x, this.y, this.z);
 
-            _state = TreiState.TRAIN_INCOMMING;
+            _state = TreinState.TRAIN_INCOMMING;
 
         }
 
@@ -47,7 +47,7 @@ namespace Models
             this.CarriedRek = null;
             this._world.TrainArrived(this, cargo);
 
-            this._state = TreiState.AT_LOADING_DOCK;
+            this._state = TreinState.AT_LOADING_DOCK;
 
             return 0;
         }
@@ -72,7 +72,7 @@ namespace Models
         
         void Depart()
         {
-            this._state = TreiState.TRAIN_DEPARTING;
+            this._state = TreinState.TRAIN_DEPARTING;
         }
 
         public override bool Update(int tick)
@@ -80,16 +80,16 @@ namespace Models
 
             switch (this._state)
             {
-                case TreiState.TRAIN_INCOMMING:
+                case TreinState.TRAIN_INCOMMING:
                     this.MoveTo(15, 0, -5, this.AtLoadingDock);
                     break;
-                case TreiState.AT_LOADING_DOCK:
+                case TreinState.AT_LOADING_DOCK:
                     if(CarriedRek != null) // Als we een rek hebben gekregen sinds de laatste Update()
                     {
                         Depart();
                     }
                     break;
-                case TreiState.TRAIN_DEPARTING:
+                case TreinState.TRAIN_DEPARTING:
                     this.MoveTo(40, 0, -5, this.Departed);
                     break;
             }
