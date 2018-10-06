@@ -10,6 +10,7 @@ namespace Models {
         public bool idle {get;set;}
         public Rek rekToCarry; // Rek wat de robot op moet halen
         Rek carriedRek; // Rek wat de robot vast heeft
+        public Trein trainToLoad; // De trein welke geladen moet worden
         private World w;
 
         int position = 0;
@@ -54,7 +55,17 @@ namespace Models {
                     {
                         if (carriedRek != null)
                         {
-                            DropOffRek(TargetNode);
+                            
+                            if(this.trainToLoad != null)
+                            {
+                                this.trainToLoad.Load(carriedRek);
+                                this.carriedRek = null;
+                                this.trainToLoad = null;
+                            }
+                            else
+                            {
+                                DropOffRek(TargetNode);
+                            }
                         }
                         else
                         {
@@ -67,7 +78,18 @@ namespace Models {
                     {
                         if(carriedRek != null)
                         {
-                            DropOffRek(route[position]);
+                            if (this.trainToLoad != null)
+                            {
+                                this.trainToLoad.Load(carriedRek);
+                                this.carriedRek = null;
+                                this.trainToLoad = null;
+                                idle = true;
+                            }
+                            else
+                            {
+                                DropOffRek(route[position]);
+                            }
+                            
                         }
                         idle = true;
                         return;
@@ -87,6 +109,8 @@ namespace Models {
         /// <param name="target"> The point where the robot has to drop off it's load</param>
         public void SetRoute(List<char> points,char target)
         {
+            this.route.Clear();
+            this.position = 0;
             // Set the route the robot needs to take
             foreach (char char_point in points)
             {

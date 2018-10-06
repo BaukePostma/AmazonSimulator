@@ -17,7 +17,7 @@ namespace Models
         World _world;
         TreiState _state;
 
-        Rek CarriedRek;
+        public Rek CarriedRek;
 
         public Trein(double x, double y, double z, double rotationX, double rotationY, double rotationZ, World w)
         {
@@ -32,6 +32,8 @@ namespace Models
             this._rY = rotationY;
             this._rZ = rotationZ;
 
+            this.CarriedRek = this._world.CreateRek(this.x, this.y, this.z);
+
             _state = TreiState.TRAIN_INCOMMING;
 
         }
@@ -40,28 +42,30 @@ namespace Models
 
         int AtLoadingDock()
         {
-            this._state = TreiState.AT_LOADING_DOCK;
-            Rek cargo = this.Unload();
-
-            this._world.TrainArrived(this, cargo);
             
+            Rek cargo = this.Unload();
+            this.CarriedRek = null;
+            this._world.TrainArrived(this, cargo);
+
+            this._state = TreiState.AT_LOADING_DOCK;
+
             return 0;
         }
 
         int Departed()
         {
             // Als trein helemaal weg gereden is
-
+            this._world.TrainDeparted(this);
             return 0;
         }
 
         Rek Unload()
         {
-            return this._world.CreateRek(this.x, this.y, this.z);
+            return this.CarriedRek;
         }
 
         // Word aangeroepen door een robot
-        void Load(Rek cargo)
+        public void Load(Rek cargo)
         {
             this.CarriedRek = cargo;
         }

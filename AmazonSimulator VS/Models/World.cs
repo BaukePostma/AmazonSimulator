@@ -12,7 +12,7 @@ namespace Models
 
         //Robot r;
         List<Robot> robots;
-        Trein t;
+        //Trein t;
         Dijkstra d;
         public List<Node> NodeList = new List<Node>();
         public List<Storage> StorageSpots = new List<Storage>();
@@ -38,9 +38,8 @@ namespace Models
             StorageSpots.Add(storage1);
 
             // g.shortest_path('A', 'H').ForEach(x => Console.WriteLine(x));
-            t = SpawnTrein(-60, 0, -5);
-            t.Rotate(0, 89.55, 0);
-            t.speed = 0.6;
+            SpawnTrein(-60, 0, -5);
+            
             // List<char> paths = d.shortest_path('A','F');
             
             this.robots = new List<Robot>();
@@ -94,8 +93,10 @@ namespace Models
         private Trein SpawnTrein(double x, double y, double z)
         {
             Trein t = new Trein(x, y, z, 0, 0, 0, this);
+            t.Rotate(0, 89.55, 0);
+            t.speed = 0.6;
             worldObjects.Add(t);
-            CreateRek(15,0,-30);
+            //CreateRek(15,0,-30);
            
             return t;
 
@@ -129,13 +130,24 @@ namespace Models
                         {
                             s.Stored.Remove(rek);
                             rek.readyforpickup = true;
+                            r.trainToLoad = _t;
                             CommandPickup(rek, false, r);
-
+                            r.idle = false;
                         }
                     }
                 }
             }
 
+        }
+
+        public void TrainDeparted(Trein _t)
+        {
+            // Delete oude trein
+            this.worldObjects.Remove(_t.CarriedRek);
+            this.worldObjects.Remove(_t);
+
+            //Maak nieuwe trein
+            this.SpawnTrein(-60, 0, -5);
         }
             
         public Rek CreateRek(double x, double y, double z)
