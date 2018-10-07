@@ -8,13 +8,11 @@ namespace Models {
     {
         bool atPickupPoint = true;
         public bool idle {get;set;}
-        public Rek rekToCarry; // Rek wat de robot op moet halen
-        Rek carriedRek;// Rek wat de robot vast heeft
-        public Trein trainToLoad; // De trein welke geladen moet worden
+        public bool isFetching = false;
+        Rek carriedRek;
         private World w;
-
         int position = 0;
-       
+    
 
         /// <summary>
         /// Creates a robot 
@@ -58,36 +56,25 @@ namespace Models {
             if (this.x == route[position].x && this.y == route[position].y && this.z == route[position].z)
             {
                 //Check if the robot is at it's destination
-                    if (this.x == TargetNode.x && this.y == TargetNode.y && this.z == TargetNode.z)
-                    {
-                        if (carriedRek != null)
-                        {
-                            
-                            if(this.trainToLoad != null)
-                            {
-                                this.trainToLoad.Load(carriedRek);
-                                this.carriedRek = null;
-                                this.trainToLoad = null;
-                            }
-                            else
-                            {
-                                DropOffRek(TargetNode);
-                            }
-                        }
-                        else
-                        {
-                            PickupRek();
-                        }
-
-                    }
+                if (this.x == TargetNode.x && this.y == TargetNode.y && this.z == TargetNode.z)
+                {
+                    DropOffRek(TargetNode);
+                }
                 // Else,check if this is the last stop
                 else if (route[route.Count-1] ==route[position])
                 {
+                    if (isFetching)
+                    {
+                        isFetching = false;
+                        w.t.CarriedRek = carriedRek;
+                        carriedRek = null;
+                    }
                     route.Clear();
                     idle = true;
                     position = 0;
                     isMoving = false;
-                    w.CommandPickup(carriedRek,true);
+                    //w.CommandPickup();
+                    
                     return;
                 }
                 position++;
@@ -130,40 +117,41 @@ namespace Models {
                 }
             }
         }
+      
         /// <summary>
-        ///Tell the robot to pick up a specific Rek
-        /// </summary>
-       /* public void PickupRek(Rek k)
-        {
-            if (k.readyforpickup == true)
-            {
-                carriedRek = k;
-                // carriedRek.Move(this.x+30, this.y+30, this.z);
-            }
-            else
-            {
-                Console.WriteLine("Tried to pickup unready Rek");
-            }
-        }*/
-        /// <summary>
-        ///Tell the robot to pick up a nearby Rek
+        ///Tell the robot to pick up a nearby Rek 
         /// </summary>
         public bool PickupRek()
         {
+            // Get a rek from the storage container at this point
+            if (isFetching)
+            {
+                //find the storage area the robot needs to pick an item up from
+                foreach (var item in w.StorageSpots)
+                {
+                    if (item.DropoffNode == this.TargetNode)
+                    {
+                       
+                        carriedRek = item.GiveRek();
+                        Console.WriteLine();
+                    }
+                }
+               
+            }
             // Check if the robot is at the depot. Obsolete?
-            if (atPickupPoint)
+            else if (atPickupPoint)
             {
                 foreach (var item in w.worldObjects)
                 {
                     
                     if (item is Rek)
                     {
-                        Rek k = (Rek)item;
+                        Rek q = (Rek)item;
 
-                        if (k.readyforpickup == true)
+                        if (q.readyforpickup == true)
                         {
-                            k.readyforpickup = false;
-                            carriedRek = k;
+                            q.readyforpickup = false;
+                            carriedRek = q;
                             return true;
                         }
                     }
@@ -184,8 +172,9 @@ namespace Models {
                 {
                     if (DropOffAt == w.StorageSpots[i].DropoffNode)
                     {
+
                         // Spot matches. Check if the spot isnt full by now. If so, redirect it to a different spot
-                        if (w.StorageSpots[i].IsFull())
+                         if (w.StorageSpots[i].IsFull())
                         {
                             // Search for a storage area with an empty spot
                             foreach (var item in w.StorageSpots)
@@ -193,14 +182,14 @@ namespace Models {
                                 if (!item.IsFull())
                                 {
                                     // Create new route, send the robot to a not-full storage area.
-                                    //this.route.Clear();
+                                    this.route.Clear();
                                     List<char> Route = w.d.shortest_path(DropOffAt.name, item.DropoffNode.name);
                                     List<char> DepotRoute = w.d.shortest_path(item.DropoffNode.name, 'B');
                                     Route.Reverse();
                                     DepotRoute.Reverse();
                                     Route.AddRange(DepotRoute);
                                     this.SetRoute(Route, item.DropoffNode.name);
-                                    position = 0;
+                                    position = -1;
                                     destinationreached = false;
                                     isMoving = false;
                                     return;
@@ -220,6 +209,11 @@ namespace Models {
                         carriedRek = null;
                     }
                 }
+
+            }
+            else if (isFetching)
+            {
+                    PickupRek();
 
             }
         }

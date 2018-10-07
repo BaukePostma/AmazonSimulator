@@ -36,7 +36,7 @@ namespace Models
         public bool isMoving = false;
 
         // Speed may not be lower than 0,1
-        public double speed = 0.8;
+        public double speed = 0.3;
 
        /// <summary>
        /// Set the position of the model
@@ -70,7 +70,7 @@ namespace Models
         /// <param name="xd">x coordintate</param>
         /// <param name="yd"> y coordinate</param>
         /// <param name="zd"> z coordinate</param>
-        public virtual void MoveTo(double xd, double yd, double zd, Func<int> klaarActie = null)
+        public virtual void MoveTo(double xd, double yd, double zd)
         {
             // Lots of statements to make sure the model moves properly
          if (!isMoving)
@@ -87,7 +87,6 @@ namespace Models
                 if (xd == this.x && yd == this.y && zd ==z)
                 {
                     isMoving = false;
-                    klaarActie?.Invoke(); // Roep klaarActie aan (alleen als hij niet null is  door '?')
                     return;
                 }
                 // If already moving, move the model on the axis by the value of speed. ALso checks for positve and negative values

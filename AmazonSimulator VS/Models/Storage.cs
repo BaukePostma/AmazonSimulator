@@ -7,7 +7,7 @@ namespace Models
 {
     public  class Storage
     {
-       public List<Rek> Stored = new List<Rek>();
+        List<Rek> Stored = new List<Rek>();
         World w;
 
         double Max_Barrels;
@@ -29,7 +29,7 @@ namespace Models
         /// <param name="y_position">position</param>
         /// <param name="z_position">position</param>
         /// <param name="currentworld">A reference to the current world object</param>
-        public Storage(Node n,double x_size,double z_size, double x_position, double y_position, double z_position,World currentworld)
+        public Storage(Node n,double x_size,double z_size, double x_position, double y_position, double z_position,World currentworld, bool beingUsed)
         {
             DropoffNode = n;
             position_x = x_position;
@@ -99,7 +99,22 @@ namespace Models
             else { return false; }
           
         }
+        public bool IsEmpty()
+        {
+            if (Stored.Count <1)
+            {
+                return true;
+            }
+            else { return false; }
 
+        }
+        //Give a rek to a calling robot
+        public Rek GiveRek()
+        {
+            Rek givenRek = Stored[Stored.Count - 1];
+            Stored.RemoveAt(Stored.Count - 1);
+            return givenRek;
+        }
     }
    
 }

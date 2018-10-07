@@ -12669,11 +12669,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\redma\\OneDrive\\Bureaublad\\School\\GOEDE\\DijkstraMerged\\AmazonSimulator VS\\AmazonSimulator VS.csproj",
+      "projectUniqueName": "C:\\Users\\redma\\OneDrive\\Bureaublad\\baukegraphics\\AmazzonSimulator-master\\AmazonSimulator VS\\AmazonSimulator VS.csproj",
       "projectName": "AmazonSimulator VS",
-      "projectPath": "C:\\Users\\redma\\OneDrive\\Bureaublad\\School\\GOEDE\\DijkstraMerged\\AmazonSimulator VS\\AmazonSimulator VS.csproj",
+      "projectPath": "C:\\Users\\redma\\OneDrive\\Bureaublad\\baukegraphics\\AmazzonSimulator-master\\AmazonSimulator VS\\AmazonSimulator VS.csproj",
       "packagesPath": "C:\\Users\\redma\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\redma\\OneDrive\\Bureaublad\\School\\GOEDE\\DijkstraMerged\\AmazonSimulator VS\\obj\\",
+      "outputPath": "C:\\Users\\redma\\OneDrive\\Bureaublad\\baukegraphics\\AmazzonSimulator-master\\AmazonSimulator VS\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

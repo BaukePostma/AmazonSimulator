@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace Models {
     public class Rek : Abstract_Model
     {
-        public bool readyforpickup = true;
+        public bool readyforpickup = false;
         public Rek(double x, double y, double z, double rotationX, double rotationY, double rotationZ)
         {
             this.type = "rek";
