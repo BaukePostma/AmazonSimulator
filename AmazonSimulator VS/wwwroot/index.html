@@ -17,20 +17,8 @@
     <script src="OBJLoader.js"></script>
     <script src="MTLLoader.js"></script>
     <script src="OrbitControls.js"></script>
-    <audio loop id="music" preload="auto" style="display: none">
-        <source src="sound/dejavu.mp3" type="audio/mpeg">
-    </audio>
-    <div id="overlay">
-        <div>
-            <button id="startButton">????</button>
-         
-        </div>
-    </div>
 
-    <script>
-        var startButton = document.getElementById('startButton');
-        startButton.addEventListener('click', Dejavu);
-    </script>
+   
     <script>
         function parseCommand(input = "") {
             return JSON.parse(input);
@@ -92,27 +80,30 @@
                 ambientlight.intensity = 1.5;
                 scene.add(ambientlight);
 
+                // Create a directionallight. Refuses to cast shadows for some reason
                 var directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
-                directionalLight.position.set(60,50,60); 			//default; light shining from top
+                directionalLight.position.set(60,50,60); 		
                 directionalLight.castShadow = true;
                 directionalLight.shadowDarknes = 10;
 
-                directionalLight.shadow.mapSize.width = 512;  // default
-                directionalLight.shadow.mapSize.height = 512; // default
-                directionalLight.shadow.camera.near = 5;    // default
-                directionalLight.shadow.camera.far = 150;     // default
-
+                directionalLight.shadow.mapSize.width = 512; 
+                directionalLight.shadow.mapSize.height = 512;
+                directionalLight.shadow.camera.near = 5;   
+                directionalLight.shadow.camera.far = 150;     
                 directionalLight.shadowCameraRight = 50;
                 directionalLight.shadowCameraLeft = 50;
                 directionalLight.shadowCameraTop = 50;
                 directionalLight.shadowCameraBottom = 50;
-                var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
-                scene.add(helper);
                 scene.add(directionalLight);
+
+                //Helper to visualise the  light
+
+                //var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
+                //scene.add(helper);
+
                 
-
+                // Create the skybox
                 var sphericalSkyboxGemotery = new THREE.SphereGeometry(150, 32, 32);
-
                 var sphericalSkyboxMaterial = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("textures/skybox_texture.JPG"), side: THREE.DoubleSide });
                 var sphericalSkybox = new THREE.Mesh(sphericalSkyboxGemotery, sphericalSkyboxMaterial);
                 sphericalSkybox.position.y = 15;
@@ -151,7 +142,6 @@
                 requestAnimationFrame(animate);
                 cameraControls.update();
                 renderer.render(scene, camera);
-                console.log(scene)
                 
             }
 
@@ -163,18 +153,11 @@
                     if (Object.keys(worldObjects).indexOf(command.parameters.guid) < 0) {
                         if (command.parameters.type == "robot") {
 
-                            var geometry = new THREE.BoxGeometry(0.9, 0.3, 0.9);
-                            var cubeMaterials = [
-                                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("textures/robot_side.png"), side: THREE.DoubleSide }), //LEFT
-                                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("textures/robot_side.png"), side: THREE.DoubleSide }), //RIGHT
-                                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("textures/robot_top.png"), side: THREE.DoubleSide }), //TOP
-                                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("textures/robot_bottom.png"), side: THREE.DoubleSide }), //BOTTOM
-                                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("textures/robot_front.png"), side: THREE.DoubleSide }), //FRONT
-                                new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load("textures/robot_front.png"), side: THREE.DoubleSide }), //BACK
-                            ];
-                            var material = new THREE.MeshFaceMaterial(cubeMaterials);
-                            var robot = new THREE.Mesh(geometry, material);
-                            robot.position.y = 0.15;
+                            // Create the robot group
+                            var group = new THREE.Group();
+                            group.position.y = 0.15;
+
+                            //Create the pointlight for the robot
                             var pointlight = new THREE.PointLight(0xff0000)
                             pointlight.position.y = 1.55
                             pointlight.distance = 10;
@@ -186,12 +169,19 @@
                             pointlight.shadow.camera.near = 5;       // default 0.5
                             pointlight.shadow.camera.far = 50;  
 
-                            robot.receiveShadow = true;
-                            var group = new THREE.Group();
-                            group.add(robot);
+                            group.receiveShadow = true;
+                            
                             group.add(pointlight);
                             scene.add(group);
                             worldObjects[command.parameters.guid] = group;
+                            loadOBJModel("/3dmodels/robot/", "robot.obj", "/3dmodels/robot/", "robot.mtl", (mesh) => {
+                                mesh.scale.set(0.3, 0.3, 0.3);
+                                mesh.receiveShadow = true;
+                                mesh.castShadow = true;
+                                group.add(mesh)
+
+                            });
+
                         } else if (command.parameters.type == "rek") {
 
                             var Rek = new THREE.Group();
@@ -199,7 +189,9 @@
                             Rek.position.z = 500;
                             Rek.receiveShadow = true;
                             Rek.castShadow = true;
+                            // Loop over all children of Rek to hopefully make them do anything with shadows
                             Rek.traverse(function (child) { child.receiveShadow = true; });
+                            Rek.traverse(function (child) { child.castShadow = true; });
                             scene.add(Rek);
                             worldObjects[command.parameters.guid] = Rek;
                             loadOBJModel("/3dmodels/barrel/", "barrel.obj", "/3dmodels/barrel/", "barrel.mtl", (mesh) => {
@@ -216,9 +208,9 @@
                             var trein = new THREE.Group();
                             trein.rotation.y += Math.PI;
                             trein.position.z = 500;
+                            // Create the train spotlight
                             var spotlight1 = new THREE.SpotLight(0xFFD914)
                             spotlight1.position.set(-1,2,-2)
-                           // spotlight1.target = 40, 0, 0
                             spotlight1.angle = 0.3;
                             spotlight1.penumbra = 0.1;
                             spotlight1.target.position.set(0, 0, 70);
@@ -227,10 +219,8 @@
                             spotlight1.shadow.camera.near = 5;       // default 0.5
                             spotlight1.shadow.camera.far = 500;  
                             spotlight1.castShadow = true;
-                            trein.add(spotlight1.target);
-                           
- 
 
+                            trein.add(spotlight1.target);
                             trein.add(spotlight1)
                             scene.add(trein);
                             worldObjects[command.parameters.guid] = trein;
