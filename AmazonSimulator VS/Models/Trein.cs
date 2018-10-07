@@ -67,7 +67,9 @@ namespace Models
         // Word aangeroepen door een robot
         void Load(Rek cargo)
         {
+           
             this.CarriedRek = cargo;
+            
         }
 
         void Depart()
@@ -107,9 +109,9 @@ namespace Models
             }
             foreach(Rek k in _world.carriage)
             {
-            if (CarriedRek != null)
+            if (k != null)
             {
-                CarriedRek.Move(this.x-3, this.y+2, this.z);
+                k.Move(this.x-3, this.y+2, this.z);
             }
             }
 

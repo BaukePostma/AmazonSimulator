@@ -212,9 +212,12 @@ namespace Models
 
         public void TrainArrived(Trein _t)
         {
-           
+           foreach(Rek k in carriage)
+            {
+      _t.CarriedRek.readyforpickup = true;
+            }
             //Word aangeroepen wanneer een trein (_t) bij het loading dock is
-            _t.CarriedRek.readyforpickup = true;
+      
 
             //Loop door robots en laat een idle robot de cargo ophalen
             CommandPickup();
