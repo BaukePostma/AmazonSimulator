@@ -45,7 +45,7 @@ namespace Models
 
             // Have the Storage element start off with a random number of Rek's
             Random r = new Random();
-            int q = r.Next(1, 3);
+            int q = r.Next(1, 4);
 
             for (int i = 0; i < q; i++)
             {
@@ -76,7 +76,7 @@ namespace Models
             }
         }
         /// <summary>
-        /// Spawns the initial rekken in the Rekken list into the world
+        /// Spawns initial rekken in the Rekken list into the world
         /// </summary>
         public void RenderRekken()
         {
@@ -87,7 +87,7 @@ namespace Models
            
         }
         /// <summary>
-        /// Returns a value  on whether or not the storage area is full
+        /// Returns true if  the storage area is full
         /// </summary>
         /// <returns> Whether or not this storage area is full</returns>
         public bool IsFull()
@@ -99,6 +99,10 @@ namespace Models
             else { return false; }
           
         }
+        /// <summary>
+        /// Returns true if the Storage is empty
+        /// </summary>
+        /// <returns></returns>
         public bool IsEmpty()
         {
             if (Stored.Count <1)
@@ -108,7 +112,7 @@ namespace Models
             else { return false; }
 
         }
-        //Give a rek to a calling robot
+        //Pass a rek to a calling robot
         public Rek GiveRek()
         {
             Rek givenRek = Stored[Stored.Count - 1];

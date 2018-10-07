@@ -23,7 +23,6 @@ namespace Models
         public double rotationZ { get { return _rZ; } }
 
         public bool needsUpdate = true;
-        // Using nodes instead of doubles, delete these doubles  later
         protected double target_x = 0;
         protected double target_y = 0;
         protected double target_z = 0;
@@ -35,7 +34,7 @@ namespace Models
         public bool destinationreached = true;
         public bool isMoving = false;
 
-        // Speed may not be lower than 0,1
+        // Speed should not be lower than 0,1. That creates weird movements
         public double speed = 0.3;
 
        /// <summary>

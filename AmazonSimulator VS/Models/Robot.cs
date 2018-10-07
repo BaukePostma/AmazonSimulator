@@ -6,10 +6,14 @@ using Newtonsoft.Json;
 namespace Models {
     public class Robot : Abstract_Model
     {
-        bool atPickupPoint = true;
+        private bool atPickupPoint = true;
         public bool idle {get;set;}
+        /// <summary>
+        /// Is the robot fetching an item
+        /// </summary>
         public bool isFetching = false;
-        Rek carriedRek;
+
+        private Rek carriedRek;
         private World w;
 
         int position = 0;
@@ -120,7 +124,7 @@ namespace Models {
         }
       
         /// <summary>
-        ///Tell the robot to pick up a nearby Rek 
+        ///Tell the robot to pick up a nearby Rek from storage or the train
         /// </summary>
         public bool PickupRek()
         {

@@ -36,27 +36,30 @@ namespace Models
             _state = TreiState.TRAIN_INCOMMING;
 
         }
-
-
-
+        /// <summary>
+        /// Gets called when the train reaches the loading dock
+        /// </summary>
         void AtLoadingDock()
         {
-            
-            this._state = TreiState.AT_LOADING_DOCK;
-            
-
+          
+            this._state = TreiState.AT_LOADING_DOCK;       
             this._world.TrainArrived(this);
             CarriedRek = null;
 
         }
 
 
-        // Word aangeroepen door een robot
+        /// <summary>
+        /// word aangeropen door een robot
+        /// </summary>
+        /// <param name="cargo"></param>
         void Load(Rek cargo)
         {
             this.CarriedRek = cargo;
         }
-
+        /// <summary>
+        /// Word aangeropen wanneer de trein moet vertrekken
+        /// </summary>
         void Depart()
         {
             this._state = TreiState.TRAIN_DEPARTING;
@@ -94,7 +97,6 @@ namespace Models
             {
                 CarriedRek.Move(this.x-3, this.y+2, this.z);
             }
-            // CreateRek(15,0,-5);
             if (needsUpdate)
             {
                 needsUpdate = false;

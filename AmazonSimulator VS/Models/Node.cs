@@ -5,9 +5,12 @@ using Newtonsoft.Json;
 
 namespace Models
 {
+    /// <summary>
+    /// A point in 3D. Used for pathfinding and moving barrels between objects
+    /// </summary>
     public  class Node
     {
-        List<Node> neighbours = new List<Node>();
+        //List<Node> neighbours = new List<Node>();
         public char name;
         public double x = 0;
         public double y = 0;

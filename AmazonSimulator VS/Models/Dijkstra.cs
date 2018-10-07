@@ -32,7 +32,7 @@ namespace Models
             this.add_vertex('D', new Dictionary<char, int>() { { 'A', 30 }, { 'N', 10 } });
             this.add_vertex('E', new Dictionary<char, int>() { { 'N', 20 }, { 'O', 20 } });
 
-            this.add_vertex('F', new Dictionary<char, int>() { { 'B', 5 }, { 'G', 3 },{ 'F',5} });
+            this.add_vertex('F', new Dictionary<char, int>() { { 'B', 5 }, { 'G', 3 },{ 'H',5} });
             this.add_vertex('G', new Dictionary<char, int>() { { 'F', 3 } });
             this.add_vertex('H', new Dictionary<char, int>() { { 'F', 5 }, { 'I', 3 },{'J',5 } });
             this.add_vertex('I', new Dictionary<char, int>() { { 'H', 3 } });
@@ -40,11 +40,8 @@ namespace Models
             this.add_vertex('K', new Dictionary<char, int>() { { 'J', 3 }  });
             this.add_vertex('L', new Dictionary<char, int>() { { 'J', 10 }, { 'M', 15 } });
             this.add_vertex('M', new Dictionary<char, int>() { { 'L', 15 }, { 'N', 5 } });
-
-            //Bonus Junctions
             this.add_vertex('N', new Dictionary<char, int>() { { 'M', 5 }, { 'D', 10 },{'E',20 } });
             this.add_vertex('O', new Dictionary<char, int>() { { 'J', 5 }, { 'C', 10 },{'E',20 } });
-            // Sets the 3d-points of the world
         }
 
 

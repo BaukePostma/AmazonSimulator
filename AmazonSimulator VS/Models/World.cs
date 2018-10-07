@@ -10,6 +10,7 @@ namespace Models
         public List<Abstract_Model> worldObjects = new List<Abstract_Model>();
         private List<IObserver<Command>> observers = new List<IObserver<Command>>();
         private List<Robot> robotlist = new List<Robot>();
+
         Robot r;
         Robot walle;
         Robot irongiant;
@@ -18,9 +19,7 @@ namespace Models
         public Dijkstra d;
         public List<Node> NodeList = new List<Node>();
         public List<Storage> StorageSpots = new List<Storage>();
-      
-
-       
+           
         public World()
         {
            
@@ -42,30 +41,17 @@ namespace Models
             t = SpawnTrein(-20,0,0);
             t.Rotate(0, 89.55, 0);
             t.speed = 0.6;
-            //a few Rek's for testing purposes
-            //Rek q = CreateRek(12,0,0);
-            //Rek w = CreateRek(15, 0, 0);
-            //Rek z = CreateRek(18, 0, 0);
-            //Rek a = CreateRek(18, 0, 0);
-            //Rek b = CreateRek(18, 0, 0);
-            //Rek c = CreateRek(18, 0, 0);
 
-            // Create the robots
+            // Initialze 3 robots. 
             r = CreateRobot(12, 0, 0);
             walle = CreateRobot(15, 0, 0);
             irongiant = CreateRobot(18, 0, 0);
-            r.speed = 0.5;
+            r.speed = 0.4;
             walle.speed = 0.3;
-            irongiant.speed = 0.15;
+            irongiant.speed = 0.2;
             robotlist.Add(r);
             robotlist.Add(walle);
             robotlist.Add(irongiant);
-
-            // Each time this function is called, tells a single robot to pick up a Rek. There are three robots
-          //  CommandPickup();
-          //  CommandPickup();
-          //  CommandPickup();
-
 
         }
         /// <summary>
@@ -117,6 +103,9 @@ namespace Models
                 
             }
         }
+        /// <summary>
+        /// Tell a single, nearby robot to fetch an item
+        /// </summary>
         public void CommandDeliver()
         {
             char start = 'B';
@@ -169,7 +158,7 @@ namespace Models
         }
 
         /// <summary>
-        /// Returns a route to a positon , and back again
+        /// Returns a route to a positon , and back 
         /// </summary>
         /// <param name="start">start char</param>
         /// <param name="end">end char</param>
@@ -183,6 +172,13 @@ namespace Models
             Route.AddRange(Terugweg);
             return Route;
         }
+        /// <summary>
+        /// Generate a route to a target
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="onewayticket"></param>
+        /// <returns></returns>
         public List<char> GenerateRoute(char start, char end,bool onewayticket)
         {
             List<char> Route = d.shortest_path(start, end);
@@ -207,7 +203,10 @@ namespace Models
             worldObjects.Add(constructorrobot);
             return constructorrobot;
         }
-
+        /// <summary>
+        /// Gets called by the train when it arrives. 
+        /// </summary>
+        /// <param name="_t"></param>
         public void TrainArrived(Trein _t)
         {
             //Word aangeroepen wanneer een trein (_t) bij het loading dock is
