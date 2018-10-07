@@ -23,7 +23,7 @@ namespace Models
         public double rotationZ { get { return _rZ; } }
 
         public bool needsUpdate = true;
-        // Using nodes instead of doubles, delete these later
+        // Using nodes instead of doubles, delete these doubles  later
         protected double target_x = 0;
         protected double target_y = 0;
         protected double target_z = 0;
@@ -34,7 +34,9 @@ namespace Models
         protected List<Node> PathList;
         public bool destinationreached = true;
         public bool isMoving = false;
-        public double speed = 0.11;
+
+        // Speed may not be lower than 0,1
+        public double speed = 0.8;
 
        /// <summary>
        /// Set the position of the model
@@ -65,13 +67,12 @@ namespace Models
         /// <summary>
         /// Moves the model to the given coordinates
         /// </summary>
-        /// <param name="xd"></param>
-        /// <param name="yd"></param>
-        /// <param name="zd"></param>
+        /// <param name="xd">x coordintate</param>
+        /// <param name="yd"> y coordinate</param>
+        /// <param name="zd"> z coordinate</param>
         public virtual void MoveTo(double xd, double yd, double zd, Func<int> klaarActie = null)
-
         {
-            // Lots of statements to make sulre the model moves properly
+            // Lots of statements to make sure the model moves properly
          if (!isMoving)
             {
                 // If  this is the first time moving, set the target
@@ -87,7 +88,6 @@ namespace Models
                 {
                     isMoving = false;
                     klaarActie?.Invoke(); // Roep klaarActie aan (alleen als hij niet null is  door '?')
-
                     return;
                 }
                 // If already moving, move the model on the axis by the value of speed. ALso checks for positve and negative values
@@ -108,8 +108,6 @@ namespace Models
                         Console.WriteLine("Less than " + speed + " x diff");
 
                     }
-                    //  _x = x +speed;
-                    // needsUpdate = true;
 
                 }
                 if (y != target_y)
@@ -129,13 +127,11 @@ namespace Models
                         _y = target_y;
                         Console.WriteLine("Less than "+speed+" y diff");
                     }
-                    // _y = y + speed;
-                    //  needsUpdate = true;
 
                 }
                 if (z != target_z)
                 {
-                    if (target_z > x)
+                    if (target_z > z)
                     {
                         _z = z + speed;
                     }
@@ -146,7 +142,6 @@ namespace Models
                     //  _z = z + speed;
                     if (Math.Abs(target_z - z) < speed)
                     {
-
                         _z = target_z;
                         Console.WriteLine("Less than " + speed + " z diff");
                     }
@@ -155,9 +150,6 @@ namespace Models
                 needsUpdate = true;
                 return;
             }
-          //  double x_dif = xd - x;
-           // double y_dif = yd - y;
-           // double z_dif = zd - z;
 
             if (destinationreached)
             {
@@ -167,6 +159,7 @@ namespace Models
 
 
         }
+
         /// <summary>
         ///  Calls Moveto using a node instead of coordinates
         /// </summary>
@@ -175,6 +168,7 @@ namespace Models
         {
             MoveTo(node.x, node.y, node.z);
         }
+
         /// <summary>
         /// Sets the rotation of this model
         /// </summary>
