@@ -184,7 +184,7 @@
                             trein.position.z = 500;
                             scene.add(trein);
                             worldObjects[command.parameters.guid] = trein;
-                            loadOBJModel("/3dmodels/", "male02.obj", "/3dmodels/", "male02.mtl", (mesh) => {
+                            loadOBJModel("/3dmodels/", "Train.obj", "/3dmodels/", "Train.mtl", (mesh) => {
                                 mesh.scale.set(0.1, 0.1, 0.1);
                                 trein.add(mesh)
                             });

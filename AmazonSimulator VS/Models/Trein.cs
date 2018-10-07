@@ -69,7 +69,7 @@ namespace Models
             {
                 case TreiState.TRAIN_INCOMMING:
                     this.MoveTo(15, 0, -5);
-                    if (this._x == 15 && this._z == -5)
+                    if (this._x >= 15 && this._z >= -5)
                     {
                         AtLoadingDock();
                     }
@@ -81,13 +81,18 @@ namespace Models
                     }
                     break;
                 case TreiState.TRAIN_DEPARTING:
-                    this.MoveTo(40, 0, -5);
+                    this.MoveTo(60, 0, -5);
+                    if (this._x == 60 && this._z == -5)
+                    {
+                       Move(-20, 0, -5);
+                        this._state = TreiState.TRAIN_INCOMMING;
+                    }
                     break;
             }
 
             if (CarriedRek != null)
             {
-                CarriedRek.Move(this.x, this.y, this.z);
+                CarriedRek.Move(this.x-3, this.y+2, this.z);
             }
             // CreateRek(15,0,-5);
             if (needsUpdate)
