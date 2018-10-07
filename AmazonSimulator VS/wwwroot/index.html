@@ -39,7 +39,6 @@
         var exampleSocket;
 
 
-
         window.onload = function () {
             var camera, scene, renderer;
             var cameraControls;
@@ -58,6 +57,9 @@
                 renderer = new THREE.WebGLRenderer({ antialias: true });
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setSize(window.innerWidth, window.innerHeight + 5);
+                renderer.shadowMapEnabled = true;
+                renderer.shadowMapSoft = true;
+                renderer.shadowMap.type = THREE.BasicShadowMap;
                 document.body.appendChild(renderer.domElement);
 
                 window.addEventListener('resize', onWindowResize, false);
@@ -71,25 +73,43 @@
                 var backgroundplane = new THREE.Mesh(backgroundworld, backgroundmaterial);
 
 
-
+                // Movement plane settings
                 plane.rotation.x = Math.PI / 2.0;
                 plane.position.x = 15;
                 plane.position.z = 15;
+                plane.receiveShadow = true
                 scene.add(plane);
 
+                // Background plane settings
                 backgroundplane.rotation.x = Math.PI / 2.0;
                 backgroundplane.position.x = 15;
                 backgroundplane.position.z = 15;
                 backgroundplane.position.y = -0.3;
+                backgroundplane.receiveShadow = true
                 scene.add(backgroundplane);
-
+                // Add a small ambient light to get rid of absolute darkness
                 var ambientlight = new THREE.AmbientLight(0x404040);
                 ambientlight.intensity = 1.5;
                 scene.add(ambientlight);
 
-                var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-                scene.add(directionalLight);
+                var directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+                directionalLight.position.set(60,50,60); 			//default; light shining from top
+                directionalLight.castShadow = true;
+                directionalLight.shadowDarknes = 10;
 
+                directionalLight.shadow.mapSize.width = 512;  // default
+                directionalLight.shadow.mapSize.height = 512; // default
+                directionalLight.shadow.camera.near = 5;    // default
+                directionalLight.shadow.camera.far = 150;     // default
+
+                directionalLight.shadowCameraRight = 50;
+                directionalLight.shadowCameraLeft = 50;
+                directionalLight.shadowCameraTop = 50;
+                directionalLight.shadowCameraBottom = 50;
+                var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
+                scene.add(helper);
+                scene.add(directionalLight);
+                
 
                 var sphericalSkyboxGemotery = new THREE.SphereGeometry(150, 32, 32);
 
@@ -131,6 +151,8 @@
                 requestAnimationFrame(animate);
                 cameraControls.update();
                 renderer.render(scene, camera);
+                console.log(scene)
+                
             }
 
             exampleSocket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/connect_client");
@@ -154,10 +176,17 @@
                             var robot = new THREE.Mesh(geometry, material);
                             robot.position.y = 0.15;
                             var pointlight = new THREE.PointLight(0xff0000)
-                            pointlight.position.y = 0.55
-                            pointlight.distance = 50;
+                            pointlight.position.y = 1.55
+                            pointlight.distance = 10;
+                            pointlight.intensity = 0.5;
                             pointlight.castShadow = true;
+                            pointlight.receiveShadow = true;
+                            pointlight.shadow.mapSize.width = 1024;  // default 512
+                            pointlight.shadow.mapSize.height = 1024; // default 512
+                            pointlight.shadow.camera.near = 5;       // default 0.5
+                            pointlight.shadow.camera.far = 50;  
 
+                            robot.receiveShadow = true;
                             var group = new THREE.Group();
                             group.add(robot);
                             group.add(pointlight);
@@ -168,12 +197,17 @@
                             var Rek = new THREE.Group();
                             Rek.rotation.y += Math.PI;
                             Rek.position.z = 500;
+                            Rek.receiveShadow = true;
+                            Rek.castShadow = true;
+                            Rek.traverse(function (child) { child.receiveShadow = true; });
                             scene.add(Rek);
                             worldObjects[command.parameters.guid] = Rek;
                             loadOBJModel("/3dmodels/barrel/", "barrel.obj", "/3dmodels/barrel/", "barrel.mtl", (mesh) => {
                                 mesh.scale.set(0.5, 0.5, 0.5);
-
+                                mesh.receiveShadow = true;
+                                mesh.castShadow = true;
                                 Rek.add(mesh)
+
                             });
 
 
@@ -182,6 +216,22 @@
                             var trein = new THREE.Group();
                             trein.rotation.y += Math.PI;
                             trein.position.z = 500;
+                            var spotlight1 = new THREE.SpotLight(0xFFD914)
+                            spotlight1.position.set(-1,2,-2)
+                           // spotlight1.target = 40, 0, 0
+                            spotlight1.angle = 0.3;
+                            spotlight1.penumbra = 0.1;
+                            spotlight1.target.position.set(0, 0, 70);
+                            spotlight1.shadow.mapSize.width = 1024;  // default 512
+                            spotlight1.shadow.mapSize.height = 1024; // default 512
+                            spotlight1.shadow.camera.near = 5;       // default 0.5
+                            spotlight1.shadow.camera.far = 500;  
+                            spotlight1.castShadow = true;
+                            trein.add(spotlight1.target);
+                           
+ 
+
+                            trein.add(spotlight1)
                             scene.add(trein);
                             worldObjects[command.parameters.guid] = trein;
                             loadOBJModel("/3dmodels/", "Train.obj", "/3dmodels/", "Train.mtl", (mesh) => {
@@ -190,6 +240,7 @@
                             });
 
                         }
+                       
                     }
 
                     var object = worldObjects[command.parameters.guid];
@@ -207,6 +258,7 @@
 
             init();
             animate();
+           
         }
 
     </script>
