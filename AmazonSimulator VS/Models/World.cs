@@ -22,7 +22,7 @@ namespace Models
         public List<Storage> StorageSpots = new List<Storage>();
         public List<Rek> Perron_Cargo = new List<Rek>();
            
-        public Dictionary<> Tasklist
+       
         public World()
         {
            
