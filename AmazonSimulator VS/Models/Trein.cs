@@ -60,6 +60,7 @@ namespace Models
         void Depart()
         {
             this._state = TreiState.TRAIN_DEPARTING;
+            this.isMoving = false;
         }
 
         public override bool Update(int tick)

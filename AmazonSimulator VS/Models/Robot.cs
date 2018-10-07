@@ -64,11 +64,18 @@ namespace Models {
                 // Else,check if this is the last stop
                 else if (route[route.Count-1] ==route[position])
                 {
+                    if (isFetching)
+                    {
+                        isFetching = false;
+                        w.t.CarriedRek = carriedRek;
+                        carriedRek = null;
+                    }
                     route.Clear();
                     idle = true;
                     position = 0;
                     isMoving = false;
-                    w.CommandPickup();
+                    //w.CommandPickup();
+                    
                     return;
                 }
                 position++;
@@ -132,7 +139,7 @@ namespace Models {
                
             }
             // Check if the robot is at the depot. Obsolete?
-            if (atPickupPoint)
+            else if (atPickupPoint)
             {
                 foreach (var item in w.worldObjects)
                 {
@@ -202,6 +209,11 @@ namespace Models {
                         carriedRek = null;
                     }
                 }
+
+            }
+            else if (isFetching)
+            {
+                    PickupRek();
 
             }
         }

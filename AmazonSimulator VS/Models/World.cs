@@ -14,7 +14,7 @@ namespace Models
         Robot walle;
         Robot irongiant;
 
-        Trein t;
+        public Trein t;
         public Dijkstra d;
         public List<Node> NodeList = new List<Node>();
         public List<Storage> StorageSpots = new List<Storage>();
@@ -40,7 +40,8 @@ namespace Models
 
             //Create the train
             t = SpawnTrein(-20,0,0);
-
+            t.Rotate(0, 89.55, 0);
+            t.speed = 0.6;
             //a few Rek's for testing purposes
             //Rek q = CreateRek(12,0,0);
             //Rek w = CreateRek(15, 0, 0);
