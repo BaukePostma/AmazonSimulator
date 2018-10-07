@@ -31,7 +31,14 @@ namespace Models
             this._rY = rotationY;
             this._rZ = rotationZ;
 
-            this.CarriedRek = w.CreateRek(_x,_y,_z);
+            Random Ra = new Random();
+            int a = Ra.Next(1, 5);
+            for (int i = 0; i < a; i++)
+            {
+                this.CarriedRek = w.CreateRek(_x, _y, _z);
+                _world.carriage.Add(this.CarriedRek);
+            }
+
 
             _state = TreiState.TRAIN_INCOMMING;
 
@@ -43,10 +50,15 @@ namespace Models
         {
             
             this._state = TreiState.AT_LOADING_DOCK;
-            
+
 
             this._world.TrainArrived(this);
-            CarriedRek = null;
+            foreach (Rek rek in _world.carriage)
+            {
+                this.CarriedRek = _world.CreateRek(_x, _y, _z);
+                _world.worldObjects.Add(this.CarriedRek);
+                CarriedRek = null;
+            }
 
         }
 
@@ -84,17 +96,22 @@ namespace Models
                     this.MoveTo(60, 0, -5);
                     if (this._x == 60 && this._z == -5)
                     {
+                        this.type.Remove(0);
                         this._world.worldObjects.Remove(this);
+
                         _world.SpawnTrein(-20,0,0);
                         this._state = TreiState.TRAIN_INCOMMING;
                     }
                     break;
             }
-
+            foreach(Rek k in _world.carriage)
+            {
             if (CarriedRek != null)
             {
                 CarriedRek.Move(this.x-3, this.y+2, this.z);
             }
+            }
+
             // CreateRek(15,0,-5);
             if (needsUpdate)
             {
