@@ -35,8 +35,9 @@ namespace Models
             int a = Ra.Next(1, 5);
             for (int i = 0; i < a; i++)
             {
+              
                 this.CarriedRek = w.CreateRek(_x, _y, _z);
-                _world.carriage.Add(this.CarriedRek);
+                 _world.carriage.Add(this.CarriedRek);
             }
 
 
@@ -51,9 +52,9 @@ namespace Models
             
             this._state = TreiState.AT_LOADING_DOCK;
 
-
+ 
             this._world.TrainArrived(this);
-            foreach (Rek rek in _world.carriage)
+           foreach (Rek rek in _world.carriage)
             {
                 this.CarriedRek = _world.CreateRek(_x, _y, _z);
                 _world.worldObjects.Add(this.CarriedRek);
