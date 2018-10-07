@@ -21,8 +21,9 @@ namespace Models
         public List<Node> NodeList = new List<Node>();
         public List<Storage> StorageSpots = new List<Storage>();
         public List<Rek> Perron_Cargo = new List<Rek>();
-           
-       
+
+        public Stack<string> Command_Cache = new Stack<string>();
+
         public World()
         {
            
@@ -232,17 +233,42 @@ namespace Models
             //Loop door robots en laat een idle robot de cargo ophalen
             for (int i = 0; i < _t.Barrels_to_Store; i++)
             {
-                CommandPickup();
+                // CommandPickup();
+                Command_Cache.Push("CommandPickup");
             }
             for (int i = 0; i < _t.Barrels_to_Load; i++)
             {
-                CommandDeliver();
-               
+                //CommandDeliver();
+                Command_Cache.Push("CommandDeliver");
             }
-
+            OrderRobots();
         }
 
+        public void OrderRobots()
+        {
+            foreach (var item in robotlist)
+            {
+                if (item.idle)
+                {
+                    string command = Command_Cache.Pop();
+                    switch (command)
+                    {
+                        case "CommandPickup":
+                            CommandPickup();
+                            break;
+                        case "CommandDeliver":
+                            CommandDeliver();
+                            break;
+                        default:
+                            Console.WriteLine("Default case");
+                            break;
+                    }
 
+                }
+            }
+          
+
+        }
             public IDisposable Subscribe(IObserver<Command> observer)
         {
             if (!observers.Contains(observer))
