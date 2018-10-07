@@ -16,8 +16,18 @@ namespace Models
     {
         World _world;
         TreiState _state;
+        /// <summary>
+        /// Amount of barrels this train brings, to store in areas
+        /// </summary>
+        public int Barrels_to_Store;
+        /// <summary>
+        /// AMount of barrels this train needs to load in order to  depart
+        /// </summary>
+        public int Barrels_to_Load;
 
-        public Rek CarriedRek;
+       // public Rek CarriedRek;
+        public List<Rek> Cargo = new List<Rek>();
+
         public Trein(double x, double y, double z, double rotationX, double rotationY, double rotationZ, World w)
         {
             this.type = "trein";
@@ -31,9 +41,30 @@ namespace Models
             this._rY = rotationY;
             this._rZ = rotationZ;
 
-            this.CarriedRek = w.CreateRek(_x,_y,_z);
 
+            Randomizeload();
+            
             _state = TreiState.TRAIN_INCOMMING;
+
+        }
+        public void FillCargo(int amount)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                Rek q = _world.CreateRek(_x + i, _y, _z);
+                Cargo.Add(q);
+            }
+        }
+        /// <summary>
+        /// Randomizes the amount of barrels this train will deliver and ask
+        /// </summary>
+        public void Randomizeload()
+        {
+            Random r = new Random();
+
+            Barrels_to_Load = r.Next(1, 4);
+            Barrels_to_Store = r.Next(1, 4);
+            FillCargo(Barrels_to_Store);
 
         }
         /// <summary>
@@ -41,13 +72,21 @@ namespace Models
         /// </summary>
         void AtLoadingDock()
         {
-          
+            isMoving = false;
             this._state = TreiState.AT_LOADING_DOCK;       
             this._world.TrainArrived(this);
-            CarriedRek = null;
+            //Cargo = null;
+            Cargo.Clear();
 
         }
-
+        void resetTrain()
+        {
+            Move(-20, 0, -5);
+            this._state = TreiState.TRAIN_INCOMMING;
+            Cargo.Clear();
+            Randomizeload();
+            Console.WriteLine();
+        }
 
         /// <summary>
         /// word aangeropen door een robot
@@ -55,7 +94,8 @@ namespace Models
         /// <param name="cargo"></param>
         void Load(Rek cargo)
         {
-            this.CarriedRek = cargo;
+            // this.CarriedRek = cargo;
+            Cargo.Add(cargo);
         }
         /// <summary>
         /// Word aangeropen wanneer de trein moet vertrekken
@@ -78,7 +118,7 @@ namespace Models
                     }
                     break;
                 case TreiState.AT_LOADING_DOCK:
-                    if (CarriedRek != null) // Als we een rek hebben gekregen sinds de laatste Update()
+                    if (Cargo.Count() == Barrels_to_Load) // Als we een rek hebben gekregen sinds de laatste Update()
                     {
                         Depart();
                     }
@@ -87,15 +127,19 @@ namespace Models
                     this.MoveTo(60, 0, -5);
                     if (this._x == 60 && this._z == -5)
                     {
-                       Move(-20, 0, -5);
-                        this._state = TreiState.TRAIN_INCOMMING;
+                        resetTrain();
+
                     }
                     break;
             }
 
-            if (CarriedRek != null)
+            if (isMoving == true)
             {
-                CarriedRek.Move(this.x-3, this.y+2, this.z);
+                foreach (var item in Cargo)
+                {
+                    item.Move(this.x - 3, this.y + 2, this.z);
+                }
+              
             }
             if (needsUpdate)
             {

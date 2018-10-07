@@ -15,11 +15,14 @@ namespace Models
         Robot walle;
         Robot irongiant;
 
+    
         public Trein t;
         public Dijkstra d;
         public List<Node> NodeList = new List<Node>();
         public List<Storage> StorageSpots = new List<Storage>();
+        public List<Rek> Perron_Cargo = new List<Rek>();
            
+        public Dictionary<> Tasklist
         public World()
         {
            
@@ -52,7 +55,11 @@ namespace Models
             robotlist.Add(r);
             robotlist.Add(walle);
             robotlist.Add(irongiant);
-
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    Robot q = CreateRobot(15,0,0);
+            //    robotlist.Add(q);
+            //}
         }
         /// <summary>
         /// Add a 3D node to the Nodelist
@@ -209,12 +216,30 @@ namespace Models
         /// <param name="_t"></param>
         public void TrainArrived(Trein _t)
         {
-            //Word aangeroepen wanneer een trein (_t) bij het loading dock is
-            _t.CarriedRek.readyforpickup = true;
+            // Dump de barrels op het perron. Word aangeroepen wanneer een trein (_t) bij het loading dock is
+            foreach (var item in _t.Cargo)
+            {
+                
+                Perron_Cargo.Add(item);
 
+                item.readyforpickup = true;
+            }
+            // Make sure the barrels are positioned properly
+            for (int i = 0; i < Perron_Cargo.Count(); i++)
+            {
+                Perron_Cargo[i].Move(10 + (i * 1.5), 0, 0);
+            }
             //Loop door robots en laat een idle robot de cargo ophalen
-            CommandPickup();
-            CommandDeliver();
+            for (int i = 0; i < _t.Barrels_to_Store; i++)
+            {
+                CommandPickup();
+            }
+            for (int i = 0; i < _t.Barrels_to_Load; i++)
+            {
+                CommandDeliver();
+               
+            }
+
         }
 
 

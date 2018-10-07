@@ -71,7 +71,8 @@ namespace Models {
                     if (isFetching)
                     {
                         isFetching = false;
-                        w.t.CarriedRek = carriedRek;
+                        // w.t.CarriedRek = carriedRek;
+                        w.t.Cargo.Add(carriedRek);
                         carriedRek = null;
                     }
                     route.Clear();
@@ -145,21 +146,24 @@ namespace Models {
             // Check if the robot is at the depot. Obsolete?
             else if (atPickupPoint)
             {
-                foreach (var item in w.worldObjects)
-                {
-                    
-                    if (item is Rek)
-                    {
-                        Rek q = (Rek)item;
+                //foreach (var item in w.worldObjects)
+                //{
 
-                        if (q.readyforpickup == true)
-                        {
-                            q.readyforpickup = false;
-                            carriedRek = q;
-                            return true;
-                        }
-                    }
-                }
+                //    if (item is Rek)
+                //    {
+                //        Rek q = (Rek)item;
+
+                //        if (q.readyforpickup == true)
+                //        {
+                //            q.readyforpickup = false;
+                //            carriedRek = q;
+                //            return true;
+                //        }
+                //    }
+                //}
+
+                carriedRek =w.Perron_Cargo.Last();
+                return true;
             }
             return false;
         }
@@ -185,17 +189,8 @@ namespace Models {
                             {
                                 if (!item.IsFull())
                                 {
-                                    // Create new route, send the robot to a not-full storage area.
-                                    this.route.Clear();
-                                    List<char> Route = w.d.shortest_path(DropOffAt.name, item.DropoffNode.name);
-                                    List<char> DepotRoute = w.d.shortest_path(item.DropoffNode.name, 'B');
-                                    Route.Reverse();
-                                    DepotRoute.Reverse();
-                                    Route.AddRange(DepotRoute);
-                                    this.SetRoute(Route, item.DropoffNode.name);
-                                    position = -1;
-                                    destinationreached = false;
-                                    isMoving = false;
+                                    HerberekentRoute(DropOffAt,item);
+                                   
                                     return;
 
                                    // List<char> Route = d.shortest_path(start, end);
@@ -220,6 +215,25 @@ namespace Models {
                     PickupRek();
 
             }
+            // If there is still Cargo left to store
+            if (w.Perron_Cargo.Count > 0 )
+            {
+                w.CommandPickup();
+            }
+        }
+        public void HerberekentRoute(Node DropOffAt,Storage storage)
+        {
+            // Create new route, send the robot to a not-full storage area.
+            this.route.Clear();
+            List<char> Route = w.d.shortest_path(DropOffAt.name, storage.DropoffNode.name);
+            List<char> DepotRoute = w.d.shortest_path(storage.DropoffNode.name, 'B');
+            Route.Reverse();
+            DepotRoute.Reverse();
+            Route.AddRange(DepotRoute);
+            this.SetRoute(Route, storage.DropoffNode.name);
+            position = -1;
+            destinationreached = false;
+            isMoving = false;
         }
         public override bool Update(int tick)
         {
