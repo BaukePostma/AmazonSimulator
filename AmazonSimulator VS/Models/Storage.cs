@@ -99,7 +99,22 @@ namespace Models
             else { return false; }
           
         }
+        public bool IsEmpty()
+        {
+            if (Stored.Count <1)
+            {
+                return true;
+            }
+            else { return false; }
 
+        }
+        //Give a rek to a calling robot
+        public Rek GiveRek()
+        {
+            Rek givenRek = Stored[Stored.Count - 1];
+            Stored.RemoveAt(Stored.Count - 1);
+            return givenRek;
+        }
     }
    
 }

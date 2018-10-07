@@ -177,16 +177,16 @@
                             });
 
 
-                        } else if (command.parameters.type == "truck") {
+                        } else if (command.parameters.type == "trein") {
 
-                            var Rek = new THREE.Group();
-                            Rek.rotation.y += Math.PI;
-                            Rek.position.z = 500;
-                            scene.add(Rek);
-                            worldObjects[command.parameters.guid] = Rek;
+                            var trein = new THREE.Group();
+                            trein.rotation.y += Math.PI;
+                            trein.position.z = 500;
+                            scene.add(trein);
+                            worldObjects[command.parameters.guid] = trein;
                             loadOBJModel("/3dmodels/", "male02.obj", "/3dmodels/", "male02.mtl", (mesh) => {
                                 mesh.scale.set(0.1, 0.1, 0.1);
-                                Rek.add(mesh)
+                                trein.add(mesh)
                             });
 
                         }

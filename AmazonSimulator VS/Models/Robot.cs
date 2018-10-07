@@ -8,11 +8,12 @@ namespace Models {
     {
         bool atPickupPoint = true;
         public bool idle {get;set;}
+        public bool isFetching = false;
         Rek carriedRek;
         private World w;
 
         int position = 0;
-       
+    
 
         /// <summary>
         /// Creates a robot 
@@ -112,10 +113,24 @@ namespace Models {
         }
       
         /// <summary>
-        ///Tell the robot to pick up a nearby Rek
+        ///Tell the robot to pick up a nearby Rek 
         /// </summary>
         public bool PickupRek()
         {
+            // Get a rek from the storage container at this point
+            if (isFetching)
+            {
+                //find the storage area the robot needs to pick an item up from
+                foreach (var item in w.StorageSpots)
+                {
+                    if (item.DropoffNode == this.TargetNode)
+                    {
+                        carriedRek = item.GiveRek();
+                        Console.WriteLine();
+                    }
+                }
+               
+            }
             // Check if the robot is at the depot. Obsolete?
             if (atPickupPoint)
             {
@@ -150,8 +165,9 @@ namespace Models {
                 {
                     if (DropOffAt == w.StorageSpots[i].DropoffNode)
                     {
+
                         // Spot matches. Check if the spot isnt full by now. If so, redirect it to a different spot
-                        if (w.StorageSpots[i].IsFull())
+                         if (w.StorageSpots[i].IsFull())
                         {
                             // Search for a storage area with an empty spot
                             foreach (var item in w.StorageSpots)

@@ -14,7 +14,7 @@ namespace Models
         Robot walle;
         Robot irongiant;
 
-        Truck t;
+        Trein t;
         public Dijkstra d;
         public List<Node> NodeList = new List<Node>();
         public List<Storage> StorageSpots = new List<Storage>();
@@ -39,15 +39,15 @@ namespace Models
             StorageSpots.Add(storage4);
 
             //Create the train
-            t = SpawnTruck(-20,0,0);
+            t = SpawnTrein(-20,0,0);
 
             //a few Rek's for testing purposes
-            Rek q = CreateRek(12,0,0);
-            Rek w = CreateRek(15, 0, 0);
-            Rek z = CreateRek(18, 0, 0);
-            Rek a = CreateRek(18, 0, 0);
-            Rek b = CreateRek(18, 0, 0);
-            Rek c = CreateRek(18, 0, 0);
+            //Rek q = CreateRek(12,0,0);
+            //Rek w = CreateRek(15, 0, 0);
+            //Rek z = CreateRek(18, 0, 0);
+            //Rek a = CreateRek(18, 0, 0);
+            //Rek b = CreateRek(18, 0, 0);
+            //Rek c = CreateRek(18, 0, 0);
 
             // Create the robots
             r = CreateRobot(12, 0, 0);
@@ -58,9 +58,9 @@ namespace Models
             robotlist.Add(irongiant);
 
             // Each time this function is called, tells a single robot to pick up a Rek. There are three robots
-            CommandPickup();
-            CommandPickup();
-            CommandPickup();
+          //  CommandPickup();
+          //  CommandPickup();
+          //  CommandPickup();
 
 
         }
@@ -113,6 +113,34 @@ namespace Models
                 
             }
         }
+        public void CommandDeliver()
+        {
+            char start = 'B';
+            char stop = ' ';
+            // Check which storagespot is full
+            for (int i = 0; i < StorageSpots.Count; i++)
+            {
+                if (!StorageSpots[i].IsEmpty())
+                {
+                    stop = StorageSpots[i].DropoffNode.name;
+                }
+            }
+            // Tell a  nearby robot to fetch an item
+            for (int i = 0; i < robotlist.Count; i++)
+            {
+                if (robotlist[i].idle)
+                {
+                        robotlist[i].idle = false;
+                    robotlist[i].isFetching = true;
+                    robotlist[i].SetRoute(GenerateRoute(start, stop), stop);
+                    
+
+
+                    return;
+                }
+
+            }
+        }
         /// <summary>
         /// Set the initial 3D nodes for the nodelist
         /// </summary>
@@ -157,13 +185,13 @@ namespace Models
             Route.Reverse();
             return Route;
         }
-        private Truck SpawnTruck(double x, double y, double z)
+        private Trein SpawnTrein(double x, double y, double z)
         {
-            Truck t = new Truck(x, y, z, 0, 0, 0);
+            Trein t = new Trein(x, y, z, 0, 0, 0,this);
             worldObjects.Add(t);
             return t;
         }
-        private Rek CreateRek(double x, double y, double z)
+        public Rek CreateRek(double x, double y, double z)
         {
             Rek rek = new Rek (x, y, z, 0, 0, 0);
             worldObjects.Add(rek);
@@ -175,56 +203,19 @@ namespace Models
             worldObjects.Add(constructorrobot);
             return constructorrobot;
         }
-        //public void MoveModel(Abstract_Model model,double x, double y , double z)
-        //{
-        //    //Check if you need to move on an axis
-        //    // Check if you need to move less than a 'tick'
-        //    // if true, move the  last remaining bit
-        //    // if false, move the tick valye
-        //    // Repeat until the move is done
 
-        //    double xdif = x - model.x;
-        //    double ydif = y - model.y;
-        //    double zdif = z - model.z;
-        //    bool destinationreached = false;
-        //    // 3 times, for each axis
-        //    while (!destinationreached)
-        //    {
+        public void TrainArrived(Trein _t)
+        {
+            //Word aangeroepen wanneer een trein (_t) bij het loading dock is
+            _t.CarriedRek.readyforpickup = true;
+
+            //Loop door robots en laat een idle robot de cargo ophalen
+            CommandPickup();
+            CommandDeliver();
+        }
 
 
-        //        if (model.needsUpdate)
-        //        {
-
-
-
-        //            // If not 0, i need to move on the X axis
-        //            if (xdif != 0)
-        //            {
-        //                // If less than 5 , 
-        //                if (xdif < 5)
-        //                {
-        //                    model.Move(xdif, 0, 0);
-        //                    destinationreached = true;
-
-        //                }
-        //                else
-        //                {
-        //                    model.Move(5, 0, 0);
-        //                    xdif = xdif - 5;
-        //                }
-        //            }
-
-        //            if (xdif == 0)
-        //            {
-        //                destinationreached = true;
-        //            }
-
-
-        //        }
-        //    }
-        //}
-
-        public IDisposable Subscribe(IObserver<Command> observer)
+            public IDisposable Subscribe(IObserver<Command> observer)
         {
             if (!observers.Contains(observer))
             {
