@@ -55,7 +55,7 @@ namespace Models
             walle = CreateRobot(15, 0, 0);
             irongiant = CreateRobot(18, 0, 0);
             r.speed = 0.5;
-            walle.speed = 0.2;
+            walle.speed = 0.3;
             irongiant.speed = 0.15;
             robotlist.Add(r);
             robotlist.Add(walle);
