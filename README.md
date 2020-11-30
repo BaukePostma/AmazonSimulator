@@ -4,4 +4,4 @@ This project was made for a homework assignment in my second year of HBO-ICT. Th
 
 The business logic was written in C#, THree.JS was used for the visualisation.Since graphics were not a factor in the final grade, we focussed on creating a simple aesthetic using a a handfull of simple models created in Autodesk Maya.
 
-![Simulation gif](images/sim.gif "Simulation")
+![Simulation gif](Images/sim.gif?raw=true "Simulation")
